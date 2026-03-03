@@ -22,8 +22,12 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SkillsBrain | BSC On-Chain Intelligence Platform",
+  title: "SkillsHub | BSC On-Chain Intelligence Platform",
   description: "Modular, production-ready skill modules for the Binance Smart Chain. Build, test, and deploy on-chain intelligence from one hub.",
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
 };
 
 export default function RootLayout({

@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SkillsBrain | BSC On-Chain Intelligence Platform</title>
+    <title>SkillsHub | BSC On-Chain Intelligence Platform</title>
+    <link rel="icon" href="/logo.png" type="image/png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -15,7 +16,18 @@
   <body>
     <div class="noise"></div>
     <header class="topbar">
-      <div class="brand">SkillsBrain</div>
+      <div class="brand" style="display:flex;align-items:center;gap:10px;">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="32" height="32" style="filter:drop-shadow(0 0 6px rgba(240,190,87,0.4))">
+          <defs>
+            <linearGradient id="lg1" x1="6" y1="8" x2="42" y2="42" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#F0BE57"/><stop offset="100%" stop-color="#C58B2E"/></linearGradient>
+            <linearGradient id="lg2" x1="24" y1="6" x2="24" y2="42" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#F0BE57" stop-opacity="0.25"/><stop offset="100%" stop-color="#C58B2E" stop-opacity="0.08"/></linearGradient>
+          </defs>
+          <path d="M24 4L43.0526 15V37L24 48L4.94744 37V15L24 4Z" stroke="url(#lg2)" stroke-width="1.2"/>
+          <path d="M30 12H20C16.134 12 13 15.134 13 19V19C13 21.761 15.239 24 18 24H30C32.761 24 35 26.239 35 29V29C35 32.866 31.866 36 28 36H18" stroke="url(#lg1)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="32" cy="12" r="2.5" fill="#F0BE57"/><circle cx="16" cy="36" r="2.5" fill="#C58B2E"/><circle cx="24" cy="24" r="1.8" fill="#F0BE57" opacity="0.6"/>
+        </svg>
+        <span>Skills<span style="color:#F0BE57">Hub</span></span>
+      </div>
       <div style="display:flex;align-items:center;gap:8px;">
         <button id="langToggle" class="badge" style="cursor:pointer;border:none;background:#1A150C;color:#F0BE57;padding:4px 12px;font-family:'JetBrains Mono',monospace;font-size:12px;">中文</button>
         <div class="badge" id="healthBadge">Checking API...</div>
