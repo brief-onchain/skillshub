@@ -2,6 +2,14 @@
 
 这个仓库面向“安装和使用 Skills”。
 
+## 0. 3 条最短安装命令
+
+```bash
+npx @skillshub/price-snapshot
+npx @skillshub/top-movers-radar
+npx @skillshub/bap578-adapter-blueprint
+```
+
 ## 1. 前置要求
 
 - Node.js `>= 18`
