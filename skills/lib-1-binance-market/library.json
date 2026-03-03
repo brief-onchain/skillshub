@@ -2,84 +2,108 @@
   "libraryId": "lib-1-binance-market",
   "name": "Skills Library 1 - Binance Market",
   "version": "0.1.0",
-  "description": "Read-only market and derivatives data skills.",
+  "description": "Production-useful market skills for launch.",
   "skills": [
     {
       "id": "price-snapshot",
       "name": "Price Snapshot",
-      "description": "Fetches spot last price and 24h change for one trading pair.",
+      "description": "Fetches spot last price and 24h range for one trading pair.",
       "category": "Market Data",
       "version": "0.1.0",
-      "author": "skillsbrain",
+      "author": "skillshub",
       "mode": "live",
-      "inputExample": { "symbol": "BTCUSDT" },
-      "installCommand": "npx @skillsbrain/price-snapshot"
+      "inputExample": {
+        "symbol": "BTCUSDT",
+        "context": "intraday-risk-check"
+      },
+      "installCommand": "npx @skillshub/price-snapshot"
     },
     {
       "id": "top-movers",
       "name": "Top Movers Radar",
-      "description": "Ranks strongest gainers by quote asset across spot pairs.",
+      "description": "Ranks strongest gainers by quote asset with optional liquidity filter.",
       "category": "Analytics",
       "version": "0.1.0",
-      "author": "skillsbrain",
+      "author": "skillshub",
       "mode": "live",
-      "inputExample": { "quoteAsset": "USDT", "limit": 10 },
-      "installCommand": "npx @skillsbrain/top-movers-radar"
+      "inputExample": {
+        "quoteAsset": "USDT",
+        "limit": 8,
+        "minQuoteVolume": 50000000
+      },
+      "installCommand": "npx @skillshub/top-movers-radar"
     },
     {
       "id": "kline-brief",
       "name": "Kline Brief",
-      "description": "Summarizes recent candles with trend percentage.",
+      "description": "Summarizes recent candles and short-term trend percentage.",
       "category": "Charts",
       "version": "0.1.0",
-      "author": "skillsbrain",
+      "author": "skillshub",
       "mode": "live",
-      "inputExample": { "symbol": "BNBUSDT", "interval": "15m", "limit": 24 },
-      "installCommand": "npx @skillsbrain/kline-brief"
+      "inputExample": {
+        "symbol": "BNBUSDT",
+        "interval": "15m",
+        "limit": 48
+      },
+      "installCommand": "npx @skillshub/kline-brief"
+    },
+    {
+      "id": "symbol-status",
+      "name": "Symbol Status",
+      "description": "Checks trading status, base/quote assets, and core filters for one symbol.",
+      "category": "Market Structure",
+      "version": "0.1.0",
+      "author": "skillshub",
+      "mode": "live",
+      "inputExample": {
+        "symbol": "SOLUSDT",
+        "includeFilters": true
+      },
+      "installCommand": "npx @skillshub/symbol-status"
     },
     {
       "id": "funding-watch",
       "name": "Funding Watch",
-      "description": "Reads current funding, mark price and next funding time.",
+      "description": "Reads current funding rate and next funding time from Binance Futures.",
       "category": "Derivatives",
       "version": "0.1.0",
-      "author": "skillsbrain",
+      "author": "skillshub",
       "mode": "live",
-      "inputExample": { "symbol": "BTCUSDT" },
-      "installCommand": "npx @skillsbrain/funding-watch"
+      "inputExample": {
+        "symbol": "BTCUSDT"
+      },
+      "installCommand": "npx @skillshub/funding-watch"
     },
     {
       "id": "open-interest-scan",
       "name": "Open Interest Scan",
-      "description": "Queries futures open interest for a symbol.",
+      "description": "Tracks futures open interest snapshot for one symbol (launch backlog mode).",
       "category": "Derivatives",
       "version": "0.1.0",
-      "author": "skillsbrain",
-      "mode": "live",
-      "inputExample": { "symbol": "ETHUSDT" },
-      "installCommand": "npx @skillsbrain/open-interest-scan"
-    },
-    {
-      "id": "symbol-status",
-      "name": "Symbol Status Checker",
-      "description": "Checks trading status and filters from exchangeInfo.",
-      "category": "Operations",
-      "version": "0.1.0",
-      "author": "skillsbrain",
-      "mode": "live",
-      "inputExample": { "symbol": "SOLUSDT" },
-      "installCommand": "npx @skillsbrain/symbol-status-checker"
+      "author": "skillshub",
+      "mode": "guide",
+      "inputExample": {
+        "symbol": "BTCUSDT"
+      },
+      "installCommand": "npx @skillshub/open-interest-scan"
     },
     {
       "id": "bsc-rpc-fanout-check",
       "name": "BSC RPC Fanout Check",
-      "description": "Benchmarks configured BSC RPC endpoints and returns fastest node.",
-      "category": "Infrastructure",
+      "description": "Validates multi-endpoint RPC consistency for BSC (launch backlog mode).",
+      "category": "Infra",
       "version": "0.1.0",
-      "author": "skillsbrain",
-      "mode": "live",
-      "inputExample": { "sampleSize": 3 },
-      "installCommand": "npx @skillsbrain/bsc-rpc-fanout-check"
+      "author": "skillshub",
+      "mode": "guide",
+      "inputExample": {
+        "method": "eth_blockNumber",
+        "endpoints": [
+          "https://bsc-dataseed.binance.org",
+          "https://bsc-dataseed1.defibit.io"
+        ]
+      },
+      "installCommand": "npx @skillshub/bsc-rpc-fanout-check"
     }
   ],
   "openSourceCandidates": [
@@ -87,11 +111,6 @@
       "name": "Market Data Module",
       "sourceTag": "intake",
       "adaptation": "Data read-only module for fast launch."
-    },
-    {
-      "name": "Signals Module",
-      "sourceTag": "intake",
-      "adaptation": "Indicator/signal style module for future phase."
     }
   ]
 }

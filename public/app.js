@@ -62,7 +62,7 @@ function renderSkills() {
         <div>${s.summary}</div>
         <div class="muted">${s.overlapPolicy}</div>
         <code>${s.install?.command || ''}</code>
-        <button class="btn ghost" data-skill-id="${s.id}">在 Playground 运行</button>
+        <button class="btn ghost" data-skill-id="${s.id}">Run in Playground</button>
       </article>
     `
     )
@@ -85,7 +85,7 @@ function renderOss() {
       <article class="card">
         <h3>${x.name}</h3>
         <div class="muted">${x.why}</div>
-        <div>改造策略：${x.adaptPlan}</div>
+        <div>Adaptation: ${x.adaptPlan}</div>
         <a href="${x.repo}" target="_blank" rel="noreferrer">${x.repo}</a>
       </article>
     `
@@ -116,7 +116,7 @@ async function runSkill() {
   try {
     input = JSON.parse(refs.skillInput.value || '{}');
   } catch (err) {
-    refs.resultBox.textContent = `Input JSON 解析失败: ${err.message}`;
+    refs.resultBox.textContent = `Invalid JSON input: ${err.message}`;
     return;
   }
 
@@ -137,7 +137,7 @@ async function runSkill() {
 
     refs.resultBox.textContent = safeJson(data);
   } catch (err) {
-    refs.resultBox.textContent = `执行失败: ${err.message}`;
+    refs.resultBox.textContent = `Execution failed: ${err.message}`;
   }
 }
 
@@ -160,7 +160,7 @@ async function boot() {
     refs.runBtn.addEventListener('click', runSkill);
     refs.useExampleBtn.addEventListener('click', setSkillInputFromCurrent);
   } catch (err) {
-    refs.resultBox.textContent = `启动失败: ${err.message}`;
+    refs.resultBox.textContent = `Boot failed: ${err.message}`;
     refs.healthBadge.textContent = 'Boot Failed';
     refs.healthBadge.classList.add('err');
   }

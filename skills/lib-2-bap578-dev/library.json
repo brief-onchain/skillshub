@@ -2,62 +2,74 @@
   "libraryId": "lib-2-bap578-dev",
   "name": "Skills Library 2 - BAP578 Dev",
   "version": "0.1.0",
-  "description": "Simple BAP578 contract/dev helper skills based on internal patterns.",
+  "description": "BAP578 developer acceleration skills based on local flap-nfa-mint patterns.",
   "skills": [
     {
       "id": "bap578-adapter-blueprint",
       "name": "BAP578 Adapter Blueprint",
-      "description": "Generates a simple adapter contract blueprint for token-bound agent accounts.",
-      "category": "BAP578 Dev",
+      "description": "Generates a minimal adapter contract blueprint with vault funding/withdraw controls.",
+      "category": "Smart Contract",
       "version": "0.1.0",
-      "author": "skillsbrain",
+      "author": "skillshub",
       "mode": "guide",
-      "inputExample": { "contractName": "MyBAP578Adapter", "nfaInterface": "INFAOwner" },
-      "installCommand": "npx @skillsbrain/bap578-adapter-blueprint"
+      "inputExample": {
+        "contractName": "ArenaOpsAdapter",
+        "nfaInterface": "INFAOwner"
+      },
+      "installCommand": "npx @skillshub/bap578-adapter-blueprint"
     },
     {
       "id": "bap578-vault-checklist",
       "name": "BAP578 Vault Checklist",
-      "description": "Outputs a concise checklist for vault-controller and operator safety.",
-      "category": "BAP578 Dev",
+      "description": "Outputs a security checklist for tokenId ownership auth and vault controller design.",
+      "category": "Security",
       "version": "0.1.0",
-      "author": "skillsbrain",
+      "author": "skillshub",
       "mode": "guide",
-      "inputExample": { "includeTokenFlows": true },
-      "installCommand": "npx @skillsbrain/bap578-vault-checklist"
+      "inputExample": {
+        "includeTokenFlows": true
+      },
+      "installCommand": "npx @skillshub/bap578-vault-checklist"
     },
     {
       "id": "bap578-deploy-plan",
       "name": "BAP578 Deploy Plan",
-      "description": "Builds a deploy+verify execution plan from environment variables.",
-      "category": "BAP578 Dev",
+      "description": "Builds an ordered deploy checklist and command template for BSC environments.",
+      "category": "DevOps",
       "version": "0.1.0",
-      "author": "skillsbrain",
+      "author": "skillshub",
       "mode": "guide",
-      "inputExample": { "network": "bsc-mainnet" },
-      "installCommand": "npx @skillsbrain/bap578-deploy-plan"
+      "inputExample": {
+        "network": "bsc-mainnet"
+      },
+      "installCommand": "npx @skillshub/bap578-deploy-plan"
     },
     {
       "id": "bap578-test-template",
       "name": "BAP578 Test Template",
-      "description": "Generates Hardhat test skeleton for adapter + vault flows.",
-      "category": "BAP578 Dev",
+      "description": "Generates a focused Hardhat test skeleton for auth and balance-consistency flows.",
+      "category": "Testing",
       "version": "0.1.0",
-      "author": "skillsbrain",
+      "author": "skillshub",
       "mode": "guide",
-      "inputExample": { "tokenId": 1, "includeFeeOnTransferCase": true },
-      "installCommand": "npx @skillsbrain/bap578-test-template"
+      "inputExample": {
+        "tokenId": 1,
+        "includeFeeOnTransferCase": true
+      },
+      "installCommand": "npx @skillshub/bap578-test-template"
     },
     {
       "id": "bap578-contract-idea-sprint",
       "name": "BAP578 Contract Idea Sprint",
-      "description": "Turns a product idea into a minimal BAP578 contract task list.",
-      "category": "BAP578 Dev",
+      "description": "Turns a game/agent idea into a one-day BAP578 contract implementation plan.",
+      "category": "Product",
       "version": "0.1.0",
-      "author": "skillsbrain",
+      "author": "skillshub",
       "mode": "guide",
-      "inputExample": { "idea": "Agent escrow for on-chain game rewards" },
-      "installCommand": "npx @skillsbrain/bap578-contract-idea-sprint"
+      "inputExample": {
+        "idea": "BAP578 crash game adapter with treasury guardrails"
+      },
+      "installCommand": "npx @skillshub/bap578-contract-idea-sprint"
     }
   ]
 }
