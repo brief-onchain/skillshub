@@ -29,7 +29,7 @@ export default function Home() {
       <InstallGuide />
       
       <footer className="py-8 bg-bg border-t border-white/5 text-center text-text-sub/40 text-xs font-mono">
-        <p>&copy; {new Date().getFullYear()} SKILLSLAB. ALL SYSTEMS OPERATIONAL.</p>
+        <p>&copy; {new Date().getFullYear()} SKILLSBRAIN. ALL SYSTEMS OPERATIONAL.</p>
       </footer>
     </main>
   );

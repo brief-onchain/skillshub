@@ -16,11 +16,30 @@ Next.js + GSAP frontend with built-in backend APIs for Binance/BSC skill playgro
 
 Skills are organized as:
 
-- `skills/lib-1-binance-market/library.json`
-- `skills/lib-2-bap578-dev/library.json`
-- `skills/lib-3-ecosystem-intake/library.json`
+- `../skills/lib-1-binance-market/library.json`
+- `../skills/lib-2-bap578-dev/library.json`
+- `../skills/lib-3-ecosystem-intake/library.json`
 
-Backend aggregates all `skills/lib-*/library.json` files dynamically.
+Backend aggregates all `../skills/lib-*/library.json` files dynamically.
+
+## Install Skills (npx)
+
+```bash
+npx @skillsbrain/price-snapshot
+npx @skillsbrain/top-movers-radar
+npx @skillsbrain/kline-brief
+npx @skillsbrain/funding-watch
+npx @skillsbrain/open-interest-scan
+npx @skillsbrain/symbol-status-checker
+npx @skillsbrain/bsc-rpc-fanout-check
+npx @skillsbrain/bap578-adapter-blueprint
+npx @skillsbrain/bap578-vault-checklist
+npx @skillsbrain/bap578-deploy-plan
+npx @skillsbrain/bap578-test-template
+npx @skillsbrain/bap578-contract-idea-sprint
+```
+
+Note: these package names are the SkillsBrain naming plan; publish to npm under the same names before public installation.
 
 ## Environment
 

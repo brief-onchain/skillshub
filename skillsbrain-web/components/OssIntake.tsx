@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { ApiClient } from '@/lib/api';
 import { OpenSourceCandidate } from '@/lib/types';
@@ -22,9 +21,6 @@ export default function OssIntake() {
             <h2 className="text-3xl font-heading font-bold text-text-main mb-2">OPEN SOURCE INTAKE</h2>
             <p className="text-text-sub">Contribute to the ecosystem. Fork, modify, deploy.</p>
           </div>
-          <Link href="https://github.com" target="_blank" className="mt-4 md:mt-0 text-gold hover:text-white transition-colors font-mono text-sm border-b border-gold pb-1">
-            View all repositories →
-          </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -37,14 +33,7 @@ export default function OssIntake() {
               <p className="text-sm text-text-sub mb-6 min-h-[3rem]">{repo.adaptation}</p>
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-gold"></span>
-                <a
-                  href={repo.repo}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-xs font-mono text-text-sub hover:text-gold transition-colors"
-                >
-                  {repo.repo}
-                </a>
+                <span className="text-xs font-mono text-text-sub">Internal Intake Track</span>
               </div>
             </div>
           ))}
