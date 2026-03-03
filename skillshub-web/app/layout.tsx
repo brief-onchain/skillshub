@@ -1,20 +1,21 @@
 import type { Metadata } from "next";
 import { Orbitron, Noto_Sans_SC, JetBrains_Mono } from "next/font/google";
+import { LanguageProvider } from "@/lib/i18n";
 import "./globals.css";
 
-const orbitron = Orbitron({ 
+const orbitron = Orbitron({
   subsets: ["latin"],
   variable: "--font-orbitron",
   display: "swap",
 });
 
-const notoSans = Noto_Sans_SC({ 
+const notoSans = Noto_Sans_SC({
   subsets: ["latin"],
   variable: "--font-noto",
   display: "swap",
 });
 
-const jetbrains = JetBrains_Mono({ 
+const jetbrains = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-jetbrains",
   display: "swap",
@@ -33,7 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${orbitron.variable} ${notoSans.variable} ${jetbrains.variable} bg-bg text-text-main font-body antialiased selection:bg-gold selection:text-bg`}>
-        {children}
+        <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>
   );

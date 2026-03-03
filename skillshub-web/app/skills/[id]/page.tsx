@@ -1,6 +1,10 @@
+'use client';
+
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
-import { getSkillById } from '@/lib/server/catalog';
+import { useEffect, useState } from 'react';
+import { useTranslation } from '@/lib/i18n';
+import { ApiClient } from '@/lib/api';
+import { Skill } from '@/lib/types';
 
 interface Props {
   params: {
@@ -9,11 +13,36 @@ interface Props {
 }
 
 export default function SkillDetailPage({ params }: Props) {
-  const skill = getSkillById(params.id);
+  const { t } = useTranslation();
+  const [skill, setSkill] = useState<Skill | null>(null);
+  const [loading, setLoading] = useState(true);
   const repoBase = process.env.NEXT_PUBLIC_SKILLS_GITHUB_REPO || '';
 
+  useEffect(() => {
+    ApiClient.getSkills().then((skills) => {
+      const found = skills.find((s) => s.id === params.id);
+      setSkill(found || null);
+      setLoading(false);
+    });
+  }, [params.id]);
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-bg text-text-main flex items-center justify-center">
+        <div className="text-text-sub font-mono">Loading...</div>
+      </main>
+    );
+  }
+
   if (!skill) {
-    notFound();
+    return (
+      <main className="min-h-screen bg-bg text-text-main flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-text-sub mb-4">Skill not found</p>
+          <Link href="/" className="text-gold hover:text-white transition-colors">{t.skillDetail.viewAllSkills}</Link>
+        </div>
+      </main>
+    );
   }
 
   const githubUrl =
@@ -25,7 +54,7 @@ export default function SkillDetailPage({ params }: Props) {
     <main className="min-h-screen bg-bg text-text-main">
       <div className="container mx-auto px-6 py-12">
         <Link href="/" className="text-gold font-mono text-sm hover:text-white transition-colors">
-          ← Back to Skills Index
+          {t.skillDetail.backToIndex}
         </Link>
 
         <section className="mt-6 p-8 bg-panel border border-gold/20 rounded-xl">
@@ -44,12 +73,12 @@ export default function SkillDetailPage({ params }: Props) {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="p-5 bg-bg border border-white/10 rounded-lg">
-              <h2 className="text-gold font-mono text-xs uppercase tracking-wider mb-3">Install Command</h2>
+              <h2 className="text-gold font-mono text-xs uppercase tracking-wider mb-3">{t.skillDetail.installCommand}</h2>
               <pre className="text-sm font-mono overflow-x-auto">{skill.installCommand || 'npx @skillshub/your-skill'}</pre>
             </div>
 
             <div className="p-5 bg-bg border border-white/10 rounded-lg">
-              <h2 className="text-gold font-mono text-xs uppercase tracking-wider mb-3">Example Input</h2>
+              <h2 className="text-gold font-mono text-xs uppercase tracking-wider mb-3">{t.skillDetail.exampleInput}</h2>
               <pre className="text-sm font-mono overflow-x-auto">
                 {JSON.stringify(skill.inputExample || {}, null, 2)}
               </pre>
@@ -61,7 +90,7 @@ export default function SkillDetailPage({ params }: Props) {
               href={`/#playground`}
               className="px-5 py-3 bg-gold text-bg font-bold rounded hover:bg-gold-dark transition-colors"
             >
-              Try in Playground
+              {t.skillDetail.tryInPlayground}
             </Link>
             {githubUrl ? (
               <a
@@ -70,14 +99,14 @@ export default function SkillDetailPage({ params }: Props) {
                 rel="noreferrer"
                 className="px-5 py-3 border border-gold/30 text-gold rounded hover:border-gold transition-colors"
               >
-                Open in GitHub
+                {t.skillDetail.openInGithub}
               </a>
             ) : null}
             <Link
               href="/"
               className="px-5 py-3 border border-gold/30 text-gold rounded hover:border-gold transition-colors"
             >
-              View All Skills
+              {t.skillDetail.viewAllSkills}
             </Link>
           </div>
         </section>

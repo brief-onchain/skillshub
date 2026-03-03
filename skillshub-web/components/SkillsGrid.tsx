@@ -6,8 +6,10 @@ import { ApiClient } from '@/lib/api';
 import { Skill } from '@/lib/types';
 import gsap from 'gsap';
 import { staggerReveal, hoverLift } from '@/lib/animations';
+import { useTranslation } from '@/lib/i18n';
 
 export default function SkillsGrid() {
+  const { t } = useTranslation();
   const [skills, setSkills] = useState<Skill[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const repoBase = process.env.NEXT_PUBLIC_SKILLS_GITHUB_REPO || '';
@@ -34,15 +36,15 @@ export default function SkillsGrid() {
         <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
           <div>
             <h2 className="text-3xl md:text-4xl font-heading font-bold text-text-main mb-4">
-              STARTER SKILLS PACK
+              {t.skills.title}
             </h2>
             <p className="text-text-sub max-w-xl">
-              Production-ready skill modules with standardized interfaces. Install, configure, and run in minutes.
+              {t.skills.subtitle}
             </p>
           </div>
           <div className="text-right hidden md:block">
-            <div className="text-gold font-mono text-xl font-bold">{skills.length} MODULES</div>
-            <div className="text-text-sub/50 text-xs uppercase tracking-wider">Available Now</div>
+            <div className="text-gold font-mono text-xl font-bold">{skills.length} {t.skills.modulesLabel}</div>
+            <div className="text-text-sub/50 text-xs uppercase tracking-wider">{t.skills.availableNow}</div>
           </div>
         </div>
 
@@ -94,23 +96,23 @@ export default function SkillsGrid() {
                       rel="noreferrer"
                       className="text-gold text-sm font-bold hover:text-white transition-colors"
                     >
-                      GITHUB
+                      {t.skills.github}
                     </a>
                   ) : null}
                   <Link
                     href={`/skills/${skill.id}`}
                     className="text-gold text-sm font-bold hover:text-white transition-colors"
                   >
-                    DETAILS
+                    {t.skills.details}
                   </Link>
-                  <button 
+                  <button
                     className="text-gold text-sm font-bold hover:text-white transition-colors flex items-center gap-2"
                     onClick={() => {
                       const playground = document.getElementById('playground');
                       playground?.scrollIntoView({ behavior: 'smooth' });
                     }}
                   >
-                    TRY IT <span className="text-lg">→</span>
+                    {t.skills.tryIt} <span className="text-lg">→</span>
                   </button>
                 </div>
               </div>

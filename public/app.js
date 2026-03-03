@@ -1,3 +1,121 @@
+const i18n = {
+  en: {
+    eyebrow: 'BSC ON-CHAIN INTELLIGENCE PLATFORM',
+    heroTitle: 'On-Chain Intelligence, Modular by Design',
+    heroLead: 'Production-ready BSC skill modules with built-in playground. Connect your API, pick a skill, and start building.',
+    launchPlayground: 'Launch Playground',
+    viewOss: 'View Open Source Intake',
+    diffTracks: 'Differentiated Skill Tracks',
+    diffDesc: 'Focused on data analytics and risk intelligence — areas underserved in the current BSC ecosystem.',
+    installLocally: 'Install Locally via npx',
+    installDesc: 'Run any skill module directly from your terminal — no setup required.',
+    starterPack: 'Starter Skills Pack',
+    starterTag: 'read-only / low-risk / fast ship',
+    playgroundTitle: 'Playground',
+    playgroundTag: 'API-ready',
+    skillLabel: 'Skill',
+    apiBaseLabel: 'API Base (Optional — falls back to local)',
+    apiPathLabel: 'API Path',
+    apiKeyLabel: 'API Key (Optional)',
+    inputJson: 'Input JSON',
+    runSkill: 'Run Skill',
+    loadExample: 'Load Example',
+    result: 'Result',
+    ossTitle: 'Open Source Intake',
+    ossTag: 'github curated',
+    runInPlayground: 'Run in Playground',
+    adaptation: 'Adaptation',
+    langSwitch: '中文',
+  },
+  zh: {
+    eyebrow: 'BSC 链上智能平台',
+    heroTitle: '链上智能，模块化设计',
+    heroLead: '生产就绪的 BSC 技能模块，内置试验场。连接 API，选择技能，开始构建。',
+    launchPlayground: '启动试验场',
+    viewOss: '查看开源项目引入',
+    diffTracks: '差异化技能路线',
+    diffDesc: '聚焦数据分析和风险情报 — 当前 BSC 生态中服务不足的领域。',
+    installLocally: '通过 npx 本地安装',
+    installDesc: '直接从终端运行任何技能模块 — 无需配置。',
+    starterPack: '入门技能包',
+    starterTag: '只读 / 低风险 / 快速上线',
+    playgroundTitle: '试验场',
+    playgroundTag: 'API 就绪',
+    skillLabel: '技能',
+    apiBaseLabel: 'API 地址（可选 — 默认本地）',
+    apiPathLabel: 'API 路径',
+    apiKeyLabel: 'API 密钥（可选）',
+    inputJson: '输入 JSON',
+    runSkill: '运行技能',
+    loadExample: '加载示例',
+    result: '结果',
+    ossTitle: '开源项目引入',
+    ossTag: 'GitHub 精选',
+    runInPlayground: '在试验场中运行',
+    adaptation: '适配方案',
+    langSwitch: 'EN',
+  }
+};
+
+let currentLang = localStorage.getItem('skillsbrain-locale') || (navigator.language.startsWith('zh') ? 'zh' : 'en');
+
+function T() { return i18n[currentLang]; }
+
+function applyStaticI18n() {
+  const t = T();
+  document.querySelector('.hero .eyebrow').textContent = t.eyebrow;
+  document.querySelector('.hero h1').textContent = t.heroTitle;
+  document.querySelector('.hero .lead').textContent = t.heroLead;
+  const heroActions = document.querySelectorAll('.hero .hero-actions a');
+  if (heroActions[0]) heroActions[0].textContent = t.launchPlayground;
+  if (heroActions[1]) heroActions[1].textContent = t.viewOss;
+
+  const articles = document.querySelectorAll('.grid-two article');
+  if (articles[0]) {
+    articles[0].querySelector('h2').textContent = t.diffTracks;
+    articles[0].querySelector('.muted').textContent = t.diffDesc;
+  }
+  if (articles[1]) {
+    articles[1].querySelector('h2').textContent = t.installLocally;
+    articles[1].querySelector('.muted').textContent = t.installDesc;
+  }
+
+  const skillsSection = document.getElementById('skills');
+  if (skillsSection) {
+    skillsSection.querySelector('.section-head h2').textContent = t.starterPack;
+    skillsSection.querySelector('.section-head .tag').textContent = t.starterTag;
+  }
+
+  const pgSection = document.getElementById('playground');
+  if (pgSection) {
+    pgSection.querySelector('.section-head h2').textContent = t.playgroundTitle;
+    pgSection.querySelector('.section-head .tag').textContent = t.playgroundTag;
+    const labels = pgSection.querySelectorAll('label');
+    labels.forEach((lbl) => {
+      if (lbl.htmlFor === 'skillSelect') lbl.textContent = t.skillLabel;
+      if (lbl.htmlFor === 'apiBase') lbl.textContent = t.apiBaseLabel;
+      if (lbl.htmlFor === 'apiPath') lbl.textContent = t.apiPathLabel;
+      if (lbl.htmlFor === 'apiKey') lbl.textContent = t.apiKeyLabel;
+      if (lbl.htmlFor === 'skillInput') lbl.textContent = t.inputJson;
+    });
+    const resultLabel = pgSection.querySelectorAll('label');
+    resultLabel.forEach((lbl) => {
+      if (!lbl.htmlFor) lbl.textContent = t.result;
+    });
+    const pgActions = pgSection.querySelectorAll('.hero-actions button');
+    if (pgActions[0]) pgActions[0].textContent = t.runSkill;
+    if (pgActions[1]) pgActions[1].textContent = t.loadExample;
+  }
+
+  const ossSection = document.getElementById('oss');
+  if (ossSection) {
+    ossSection.querySelector('.section-head h2').textContent = t.ossTitle;
+    ossSection.querySelector('.section-head .tag').textContent = t.ossTag;
+  }
+
+  document.getElementById('langToggle').textContent = t.langSwitch;
+}
+
 async function j(url, options) {
   const res = await fetch(url, options);
   const data = await res.json();
@@ -53,6 +171,7 @@ function renderExcluded() {
 }
 
 function renderSkills() {
+  const t = T();
   refs.skillsGrid.innerHTML = state.catalog.skills
     .map(
       (s) => `
@@ -62,7 +181,7 @@ function renderSkills() {
         <div>${s.summary}</div>
         <div class="muted">${s.overlapPolicy}</div>
         <code>${s.install?.command || ''}</code>
-        <button class="btn ghost" data-skill-id="${s.id}">Run in Playground</button>
+        <button class="btn ghost" data-skill-id="${s.id}">${t.runInPlayground}</button>
       </article>
     `
     )
@@ -79,13 +198,14 @@ function renderSkills() {
 }
 
 function renderOss() {
+  const t = T();
   refs.ossGrid.innerHTML = state.catalog.openSourceCandidates
     .map(
       (x) => `
       <article class="card">
         <h3>${x.name}</h3>
         <div class="muted">${x.why}</div>
-        <div>Adaptation: ${x.adaptPlan}</div>
+        <div>${t.adaptation}: ${x.adaptPlan}</div>
         <a href="${x.repo}" target="_blank" rel="noreferrer">${x.repo}</a>
       </article>
     `
@@ -159,6 +279,16 @@ async function boot() {
 
     refs.runBtn.addEventListener('click', runSkill);
     refs.useExampleBtn.addEventListener('click', setSkillInputFromCurrent);
+
+    applyStaticI18n();
+
+    document.getElementById('langToggle').addEventListener('click', () => {
+      currentLang = currentLang === 'en' ? 'zh' : 'en';
+      localStorage.setItem('skillsbrain-locale', currentLang);
+      applyStaticI18n();
+      renderSkills();
+      renderOss();
+    });
   } catch (err) {
     refs.resultBox.textContent = `Boot failed: ${err.message}`;
     refs.healthBadge.textContent = 'Boot Failed';

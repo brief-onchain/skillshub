@@ -2,9 +2,11 @@
 
 import { useEffect, useRef } from 'react';
 import { fadeInUp } from '@/lib/animations';
+import { useTranslation } from '@/lib/i18n';
 import gsap from 'gsap';
 
 export default function Hero() {
+  const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
@@ -36,38 +38,38 @@ export default function Hero() {
       <div className="container mx-auto px-6 relative z-10 text-center">
         <div className="inline-flex items-center gap-2 px-4 py-2 mb-8 rounded-full bg-panel border border-gold/20 text-gold text-xs font-mono tracking-widest uppercase">
           <span className="w-1.5 h-1.5 bg-gold rounded-full animate-ping" />
-          Binance / BSC Skills Hub
+          {t.hero.badge}
         </div>
 
-        <h1 
+        <h1
           ref={titleRef}
           className="font-heading text-5xl md:text-7xl lg:text-8xl font-bold text-text-main mb-6 tracking-tight opacity-0"
         >
-          INTELLIGENCE <br />
+          {t.hero.titleLine1} <br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold to-gold-dark">
-            UNLEASHED
+            {t.hero.titleLine2}
           </span>
         </h1>
 
-        <p 
+        <p
           ref={subtitleRef}
           className="max-w-2xl mx-auto text-text-sub text-lg md:text-xl mb-10 leading-relaxed opacity-0"
         >
-          Modular on-chain skills for the Binance Smart Chain ecosystem.
+          {t.hero.subtitle}
           <br className="hidden md:block" />
-          Build, test, and deploy — all from one hub.
+          {t.hero.subtitleLine2}
         </p>
 
-        <div 
+        <div
           ref={ctaRef}
           className="flex flex-col md:flex-row items-center justify-center gap-4 opacity-0"
         >
-          <a 
+          <a
             href="#playground"
             className="px-8 py-4 bg-gold hover:bg-gold-dark text-bg font-bold font-heading tracking-wide rounded clip-path-polygon transition-colors w-full md:w-auto"
             style={{ clipPath: 'polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%)' }}
           >
-            LAUNCH PLAYGROUND
+            {t.hero.ctaPlayground}
           </a>
           <a 
             href="#install"

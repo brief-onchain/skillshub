@@ -3,8 +3,10 @@
 import { useEffect, useState } from 'react';
 import { ApiClient } from '@/lib/api';
 import { OpenSourceCandidate } from '@/lib/types';
+import { useTranslation } from '@/lib/i18n';
 
 export default function OssIntake() {
+  const { t } = useTranslation();
   const [repos, setRepos] = useState<OpenSourceCandidate[]>([]);
 
   useEffect(() => {
@@ -18,8 +20,8 @@ export default function OssIntake() {
       <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row items-center justify-between mb-12">
           <div>
-            <h2 className="text-3xl font-heading font-bold text-text-main mb-2">OPEN SOURCE INTAKE</h2>
-            <p className="text-text-sub">Curated open-source projects being adapted for the BSC skill ecosystem.</p>
+            <h2 className="text-3xl font-heading font-bold text-text-main mb-2">{t.oss.title}</h2>
+            <p className="text-text-sub">{t.oss.subtitle}</p>
           </div>
         </div>
 
@@ -33,7 +35,7 @@ export default function OssIntake() {
               <p className="text-sm text-text-sub mb-6 min-h-[3rem]">{repo.adaptation}</p>
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-gold"></span>
-                <span className="text-xs font-mono text-text-sub">Internal Intake Track</span>
+                <span className="text-xs font-mono text-text-sub">{t.oss.intakeTrack}</span>
               </div>
             </div>
           ))}

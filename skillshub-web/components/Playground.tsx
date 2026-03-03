@@ -3,9 +3,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { ApiClient } from '@/lib/api';
 import { Skill, PlaygroundResponse } from '@/lib/types';
+import { useTranslation } from '@/lib/i18n';
 import gsap from 'gsap';
 
 export default function Playground() {
+  const { t } = useTranslation();
   const [skills, setSkills] = useState<Skill[]>([]);
   const [selectedSkillId, setSelectedSkillId] = useState<string>('');
   const [inputJson, setInputJson] = useState<string>('{\n  "symbol": "BTCUSDT"\n}');
@@ -84,10 +86,10 @@ export default function Playground() {
       <div className="container mx-auto px-6">
         <div className="mb-12 text-center">
           <h2 className="text-3xl md:text-4xl font-heading font-bold text-text-main mb-4">
-            SKILL PLAYGROUND
+            {t.playground.title}
           </h2>
           <p className="text-text-sub">
-            Configure parameters, execute skills, and inspect outputs — all in your browser.
+            {t.playground.subtitle}
           </p>
         </div>
 
@@ -95,7 +97,7 @@ export default function Playground() {
           {/* Input Panel */}
           <div className="bg-bg border border-white/10 p-6 rounded-lg">
             <div className="mb-6">
-              <label className="block text-gold text-xs font-mono mb-2 uppercase tracking-wider">Select Skill</label>
+              <label className="block text-gold text-xs font-mono mb-2 uppercase tracking-wider">{t.playground.selectSkill}</label>
               <select 
                 value={selectedSkillId}
                 onChange={(e) => setSelectedSkillId(e.target.value)}
@@ -109,9 +111,9 @@ export default function Playground() {
 
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div>
-                <label className="block text-text-sub/60 text-xs font-mono mb-2">API Base (Optional)</label>
-                <input 
-                  type="text" 
+                <label className="block text-text-sub/60 text-xs font-mono mb-2">{t.playground.apiBase}</label>
+                <input
+                  type="text"
                   value={apiBase}
                   onChange={(e) => setApiBase(e.target.value)}
                   placeholder="https://api.example.com"
@@ -119,7 +121,7 @@ export default function Playground() {
                 />
               </div>
               <div>
-                <label className="block text-text-sub/60 text-xs font-mono mb-2">API Path</label>
+                <label className="block text-text-sub/60 text-xs font-mono mb-2">{t.playground.apiPath}</label>
                 <input 
                   type="text" 
                   value={apiPath}
@@ -132,7 +134,7 @@ export default function Playground() {
 
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div>
-                <label className="block text-text-sub/60 text-xs font-mono mb-2">API Key (Optional)</label>
+                <label className="block text-text-sub/60 text-xs font-mono mb-2">{t.playground.apiKey}</label>
                 <input 
                   type="password" 
                   value={apiKey}
@@ -142,7 +144,7 @@ export default function Playground() {
                 />
               </div>
               <div>
-                <label className="block text-text-sub/60 text-xs font-mono mb-2">Install</label>
+                <label className="block text-text-sub/60 text-xs font-mono mb-2">{t.playground.install}</label>
                 <input
                   type="text"
                   readOnly
@@ -153,7 +155,7 @@ export default function Playground() {
             </div>
 
             <div className="mb-6">
-              <label className="block text-gold text-xs font-mono mb-2 uppercase tracking-wider">Input JSON</label>
+              <label className="block text-gold text-xs font-mono mb-2 uppercase tracking-wider">{t.playground.inputJson}</label>
               <textarea 
                 value={inputJson}
                 onChange={(e) => setInputJson(e.target.value)}
@@ -171,17 +173,17 @@ export default function Playground() {
                 : 'bg-gold hover:bg-gold-dark text-bg'
               }`}
             >
-              {loading ? 'Processing...' : 'Run Skill'}
+              {loading ? t.playground.processing : t.playground.runSkill}
             </button>
           </div>
 
           {/* Output Panel */}
           <div className="bg-bg border border-white/10 p-6 rounded-lg flex flex-col h-full min-h-[400px]">
             <div className="flex justify-between items-center mb-4 pb-4 border-b border-white/5">
-              <span className="text-gold text-xs font-mono uppercase tracking-wider">Output Console</span>
+              <span className="text-gold text-xs font-mono uppercase tracking-wider">{t.playground.outputConsole}</span>
               {result && (
                 <span className={`text-xs font-mono px-2 py-1 rounded ${result.success ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'}`}>
-                  {result.success ? 'SUCCESS' : 'ERROR'}
+                  {result.success ? t.playground.success : t.playground.error}
                 </span>
               )}
             </div>
@@ -193,7 +195,7 @@ export default function Playground() {
                 </pre>
               ) : (
                 <div className="h-full flex items-center justify-center text-text-sub/20">
-                  <p>Ready to execute...</p>
+                  <p>{t.playground.readyToExecute}</p>
                 </div>
               )}
             </div>
