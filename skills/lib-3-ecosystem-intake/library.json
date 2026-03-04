@@ -2,7 +2,7 @@
   "libraryId": "lib-3-ecosystem-intake",
   "name": "Skills Library 3 - Ecosystem Intake",
   "version": "0.1.0",
-  "description": "Non-overlap launch constraints and future intake directions.",
+  "description": "Curated ecosystem expansion tracks for BSC developers.",
   "skills": [
     {
       "id": "four-meme-ai",
@@ -13,44 +13,125 @@
       "author": "four-meme-community",
       "mode": "integration",
       "inputExample": {
-        "host": "openclaw",
+        "host": "ecosystem-cli",
         "command": "fourmeme create --budget 0.01"
       },
       "installCommand": "npx skills add four-meme-community/four-meme-ai"
+    },
+    {
+      "id": "bsc-nft-ops-guide",
+      "name": "BSC NFT Ops Guide",
+      "description": "Guides ERC-721 metadata, ownership checks, and transfer-safe operational flow on BSC.",
+      "category": "Ecosystem",
+      "version": "0.1.0",
+      "author": "skillshub-curation",
+      "mode": "guide",
+      "inputExample": {
+        "task": "check_owner",
+        "contract": "0x...",
+        "tokenId": 1
+      },
+      "installCommand": "npx @skillshub/bsc-nft-ops-guide"
+    },
+    {
+      "id": "bitagent-bonding-playbook",
+      "name": "BitAgent Bonding Playbook",
+      "description": "Provides guarded execution playbook for launch/buy/sell flows on BSC bonding-curve products.",
+      "category": "Ecosystem",
+      "version": "0.1.0",
+      "author": "skillshub-curation",
+      "mode": "guide",
+      "inputExample": {
+        "action": "launch",
+        "network": "bsc",
+        "symbol": "AGENT"
+      },
+      "installCommand": "npx @skillshub/bitagent-bonding-playbook"
+    },
+    {
+      "id": "multichain-portfolio-tracker",
+      "name": "Multichain Portfolio Tracker",
+      "description": "Outlines cross-chain portfolio analysis workflow for TRON/ETH/BSC with position and fee breakdown.",
+      "category": "Ecosystem",
+      "version": "0.1.0",
+      "author": "skillshub-curation",
+      "mode": "guide",
+      "inputExample": {
+        "chains": [
+          "bsc",
+          "eth",
+          "tron"
+        ],
+        "wallet": "0x..."
+      },
+      "installCommand": "npx @skillshub/multichain-portfolio-tracker"
+    },
+    {
+      "id": "pancakeswap-trading-guard",
+      "name": "PancakeSwap Trading Guard",
+      "description": "Builds pre-trade checklist and execution guardrails for BSC PancakeSwap workflows.",
+      "category": "Ecosystem",
+      "version": "0.1.0",
+      "author": "skillshub-curation",
+      "mode": "guide",
+      "inputExample": {
+        "pair": "WBNB/USDT",
+        "side": "buy",
+        "slippageBps": 100
+      },
+      "installCommand": "npx @skillshub/pancakeswap-trading-guard"
+    },
+    {
+      "id": "erc8004-agent-registry",
+      "name": "ERC8004 Agent Registry",
+      "description": "Generates deployment and operation checklist for ERC-8004-style agent identity and reputation registries.",
+      "category": "Ecosystem",
+      "version": "0.1.0",
+      "author": "skillshub-curation",
+      "mode": "guide",
+      "inputExample": {
+        "chain": "bsc",
+        "network": "mainnet",
+        "operation": "register_agent"
+      },
+      "installCommand": "npx @skillshub/erc8004-agent-registry"
+    },
+    {
+      "id": "prediction-market-clob",
+      "name": "Prediction Market CLOB",
+      "description": "Provides orderbook trading and risk-control playbook for BSC prediction-market CLOB integrations.",
+      "category": "Ecosystem",
+      "version": "0.1.0",
+      "author": "skillshub-curation",
+      "mode": "guide",
+      "inputExample": {
+        "market": "US-election-2028",
+        "side": "YES",
+        "strategy": "limit_ladder"
+      },
+      "installCommand": "npx @skillshub/prediction-market-clob"
     }
   ],
   "excludedDirections": [
     {
-      "slug": "openclaw-bitagent",
-      "note": "Launch phase avoids token launch/bonding-curve overlap."
+      "slug": "direct-hot-wallet-autotrade",
+      "note": "Default mode avoids autonomous hot-wallet trade execution without explicit user confirmation."
     },
     {
-      "slug": "bnb-nft",
-      "note": "Launch phase avoids generic NFT operation overlap."
-    },
-    {
-      "slug": "crypto-portfolio-tracker",
-      "note": "Portfolio tracker kept in phase-2 backlog."
-    },
-    {
-      "slug": "8004-skill",
-      "note": "Identity-registry track kept in phase-2 backlog."
-    },
-    {
-      "slug": "pancake-swap-skills",
-      "note": "No direct swap execution in first release."
+      "slug": "unscoped-private-key-injection",
+      "note": "No plaintext private-key handling inside generated examples or outputs."
     }
   ],
   "openSourceCandidates": [
     {
-      "name": "Risk Module",
-      "sourceTag": "intake",
-      "adaptation": "Token risk and honeypot style checks for phase-2."
+      "name": "BSC NFT Read Module",
+      "sourceTag": "ecosystem",
+      "adaptation": "ERC-721 read flows with metadata/cache normalization."
     },
     {
-      "name": "Liquidation Module",
-      "sourceTag": "intake",
-      "adaptation": "Derivatives liquidation signals for phase-2 alerts."
+      "name": "Prediction CLOB Guard Module",
+      "sourceTag": "ecosystem",
+      "adaptation": "Order placement guardrails and post-trade reconciliation."
     }
   ]
 }

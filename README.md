@@ -51,6 +51,18 @@ npx @skillshub/bap578-test-template
 npx @skillshub/bap578-contract-idea-sprint
 ```
 
+### Ecosystem Intake
+
+```bash
+npx @skillshub/bsc-nft-ops-guide
+npx @skillshub/bitagent-bonding-playbook
+npx @skillshub/multichain-portfolio-tracker
+npx @skillshub/pancakeswap-trading-guard
+npx @skillshub/erc8004-agent-registry
+npx @skillshub/prediction-market-clob
+npx skills add four-meme-community/four-meme-ai
+```
+
 ## 4. 如何挑选 Skill
 
 - 想要行情/市场数据：优先用 `price-snapshot`、`top-movers-radar`、`kline-brief`

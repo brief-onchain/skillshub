@@ -109,26 +109,30 @@
     {
       "id": "open-interest-scan",
       "name": "Open Interest Scan",
-      "description": "Tracks futures open interest snapshot for one symbol (launch backlog mode).",
+      "description": "Tracks futures open interest and taker flow changes for one symbol.",
       "category": "Derivatives",
       "version": "0.1.0",
       "author": "skillshub",
-      "mode": "guide",
+      "mode": "live",
       "inputExample": {
-        "symbol": "BTCUSDT"
+        "symbol": "BTCUSDT",
+        "period": "5m",
+        "limit": 2
       },
       "installCommand": "npx @skillshub/open-interest-scan"
     },
     {
       "id": "bsc-rpc-fanout-check",
       "name": "BSC RPC Fanout Check",
-      "description": "Validates multi-endpoint RPC consistency for BSC (launch backlog mode).",
+      "description": "Validates multi-endpoint RPC consistency, latency, and block drift for BSC.",
       "category": "Infra",
       "version": "0.1.0",
       "author": "skillshub",
-      "mode": "guide",
+      "mode": "live",
       "inputExample": {
         "method": "eth_blockNumber",
+        "sampleSize": 2,
+        "blockDriftThreshold": 2,
         "endpoints": [
           "https://bsc-dataseed.binance.org",
           "https://bsc-dataseed1.defibit.io"

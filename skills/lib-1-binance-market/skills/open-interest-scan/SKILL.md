@@ -1,6 +1,6 @@
 ---
 name: open_interest_scan
-description: Queries futures open interest for a symbol.
+description: Tracks futures open interest and taker flow changes for a symbol.
 ---
 
 # Open Interest Scan
@@ -13,10 +13,16 @@ description: Queries futures open interest for a symbol.
 
 ## Input Example
 
+```json
 {
-  "symbol": "ETHUSDT"
+  "symbol": "ETHUSDT",
+  "period": "5m",
+  "limit": 2
 }
+```
 
 ## Local Install (planned)
 
+```bash
 npx @skillshub/open-interest-scan
+```

@@ -1,5 +1,5 @@
 import { loadSkillIds } from '@/lib/server/catalog';
-import { getLlmConfig } from '@/lib/server/env';
+import { getLlmConfig, getRpcEndpoints } from '@/lib/server/env';
 import czStyleProfile from '@/lib/server/data/cz_style_profile.json';
 import type { PlaygroundRequest, PlaygroundResponse } from '@/lib/types';
 
@@ -24,6 +24,54 @@ async function fetchJson(url: string, timeoutMs = 4500) {
   } finally {
     clearTimeout(timer);
   }
+}
+
+async function fetchRpc(endpoint: string, method: string, params: unknown[] = [], timeoutMs = 4500) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      signal: controller.signal,
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'skillshub-web/0.1.0'
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 1,
+        method,
+        params
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`RPC upstream ${response.status}`);
+    }
+
+    const parsed = await response.json();
+    if (parsed?.error) {
+      const msg = parsed.error?.message || JSON.stringify(parsed.error);
+      throw new Error(`RPC error: ${msg}`);
+    }
+    return parsed?.result;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function toHexNumber(value: unknown) {
+  if (typeof value === 'string' && value.startsWith('0x')) {
+    return Number.parseInt(value, 16);
+  }
+  return Number(value || 0);
+}
+
+function percentile(values: number[], p: number) {
+  if (!values.length) return null;
+  const sorted = [...values].sort((a, b) => a - b);
+  const idx = Math.min(sorted.length - 1, Math.max(0, Math.ceil((p / 100) * sorted.length) - 1));
+  return sorted[idx];
 }
 
 function extractChatReply(parsed: any) {
@@ -267,6 +315,215 @@ function fallbackKlineBrief(symbol: string, interval: string, limit: number) {
   };
 }
 
+function fallbackOpenInterestScan(symbol: string, period: string) {
+  return {
+    source: 'fallback',
+    symbol,
+    period,
+    openInterestContracts: 125000,
+    openInterestChange: 2200,
+    openInterestChangePercent: 1.79,
+    takerBuySellRatio: 1.08,
+    riskFlag: 'normal',
+    note: 'Binance futures endpoints unavailable; showing fallback snapshot.'
+  };
+}
+
+function fallbackRpcFanout(method: string, endpoints: string[]) {
+  const picked = endpoints[0] || 'https://bsc-dataseed.binance.org/';
+  return {
+    source: 'fallback',
+    method,
+    healthiestEndpoint: picked,
+    healthyEndpoints: 1,
+    totalEndpoints: Math.max(1, endpoints.length),
+    latestBlock: 42000000,
+    maxBlockDrift: 0,
+    note: 'RPC probes unavailable; showing fallback health snapshot.'
+  };
+}
+
+async function runOpenInterestScan(input: Record<string, unknown>) {
+  const symbol = normalizeSymbol(input.symbol || 'BTCUSDT');
+  const allowedPeriods = ['5m', '15m', '30m', '1h', '2h', '4h', '6h', '12h', '1d'];
+  const periodInput = String(input.period || '5m');
+  const period = allowedPeriods.includes(periodInput) ? periodInput : '5m';
+  const limit = Math.max(2, Math.min(30, Number(input.limit || 2)));
+
+  let snapshot: any = null;
+  let hist: any[] = [];
+  let taker: any[] = [];
+  let premium: any = null;
+  try {
+    const [snapshotRes, histRes, takerRes, premiumRes] = await Promise.allSettled([
+      fetchJson(`https://fapi.binance.com/fapi/v1/openInterest?symbol=${symbol}`),
+      fetchJson(
+        `https://fapi.binance.com/futures/data/openInterestHist?symbol=${symbol}&period=${period}&limit=${limit}`
+      ),
+      fetchJson(
+        `https://fapi.binance.com/futures/data/takerlongshortRatio?symbol=${symbol}&period=${period}&limit=${limit}`
+      ),
+      fetchJson(`https://fapi.binance.com/fapi/v1/premiumIndex?symbol=${symbol}`)
+    ]);
+
+    if (snapshotRes.status === 'fulfilled') snapshot = snapshotRes.value;
+    if (histRes.status === 'fulfilled' && Array.isArray(histRes.value)) hist = histRes.value;
+    if (takerRes.status === 'fulfilled' && Array.isArray(takerRes.value)) taker = takerRes.value;
+    if (premiumRes.status === 'fulfilled') premium = premiumRes.value;
+  } catch {
+    return fallbackOpenInterestScan(symbol, period);
+  }
+
+  if (!snapshot && hist.length === 0) {
+    return fallbackOpenInterestScan(symbol, period);
+  }
+
+  const latestHist = hist.length ? hist[hist.length - 1] : null;
+  const prevHist = hist.length > 1 ? hist[hist.length - 2] : null;
+  const openInterestContracts = Number(snapshot?.openInterest ?? latestHist?.sumOpenInterest ?? 0);
+  const prevOpenInterest = Number(prevHist?.sumOpenInterest ?? 0);
+  const openInterestChange = prevOpenInterest ? openInterestContracts - prevOpenInterest : 0;
+  const openInterestChangePercent = prevOpenInterest
+    ? Number(((openInterestChange / prevOpenInterest) * 100).toFixed(3))
+    : 0;
+
+  const markPrice = Number(premium?.markPrice || 0);
+  const openInterestNotionalUsd = markPrice
+    ? Number((openInterestContracts * markPrice).toFixed(2))
+    : null;
+
+  const latestTaker = taker.length ? taker[taker.length - 1] : null;
+  const takerBuySellRatio = Number(latestTaker?.buySellRatio || 0);
+  const longShortRatio = Number(latestTaker?.longShortRatio || 0);
+
+  let riskFlag = 'normal';
+  const reasons: string[] = [];
+  if (Math.abs(openInterestChangePercent) >= 8) {
+    riskFlag = 'elevated';
+    reasons.push('open_interest_volatility');
+  }
+  if (openInterestChangePercent > 0 && takerBuySellRatio >= 1.8) {
+    riskFlag = 'crowded-long';
+    reasons.push('taker_buy_pressure');
+  }
+  if (openInterestChangePercent > 0 && takerBuySellRatio > 0 && takerBuySellRatio <= 0.55) {
+    riskFlag = 'crowded-short';
+    reasons.push('taker_sell_pressure');
+  }
+
+  return {
+    source: 'binance-futures',
+    symbol,
+    period,
+    limit,
+    openInterestContracts,
+    openInterestNotionalUsd,
+    openInterestChange: Number(openInterestChange.toFixed(3)),
+    openInterestChangePercent,
+    takerBuySellRatio: takerBuySellRatio || null,
+    longShortRatio: longShortRatio || null,
+    markPrice: markPrice || null,
+    snapshotTime: snapshot?.time ? new Date(Number(snapshot.time)).toISOString() : null,
+    latestHistTime: latestHist?.timestamp ? new Date(Number(latestHist.timestamp)).toISOString() : null,
+    riskFlag,
+    riskReasons: reasons
+  };
+}
+
+async function runBscRpcFanoutCheck(input: Record<string, unknown>) {
+  const method = String(input.method || 'eth_blockNumber');
+  const params = Array.isArray(input.params) ? input.params : [];
+  const timeoutMs = Math.max(1200, Math.min(12000, Number(input.timeoutMs || 4500)));
+  const sampleSize = Math.max(1, Math.min(5, Number(input.sampleSize || 2)));
+  const blockDriftThreshold = Math.max(0, Math.min(20, Number(input.blockDriftThreshold || 2)));
+  const requested = Array.isArray(input.endpoints) ? input.endpoints.map((x) => String(x).trim()).filter(Boolean) : [];
+  const endpoints = requested.length ? requested : getRpcEndpoints();
+
+  if (!endpoints.length) {
+    return fallbackRpcFanout(method, endpoints);
+  }
+
+  const endpointChecks = await Promise.all(
+    endpoints.map(async (endpoint) => {
+      const latencies: number[] = [];
+      let probeResult: unknown = null;
+      let blockNumber = 0;
+      let chainId = 0;
+      let error: string | null = null;
+
+      for (let i = 0; i < sampleSize; i += 1) {
+        const started = Date.now();
+        try {
+          const result = await fetchRpc(endpoint, method, params, timeoutMs);
+          const elapsed = Date.now() - started;
+          latencies.push(elapsed);
+          probeResult = result;
+        } catch (err) {
+          error = err instanceof Error ? err.message : 'rpc probe failed';
+        }
+      }
+
+      if (latencies.length) {
+        try {
+          const [blockHex, chainHex] = await Promise.all([
+            fetchRpc(endpoint, 'eth_blockNumber', [], timeoutMs),
+            fetchRpc(endpoint, 'eth_chainId', [], timeoutMs)
+          ]);
+          blockNumber = toHexNumber(blockHex);
+          chainId = toHexNumber(chainHex);
+        } catch (err) {
+          error = err instanceof Error ? err.message : 'rpc metadata probe failed';
+        }
+      }
+
+      return {
+        endpoint,
+        ok: latencies.length > 0 && error === null,
+        avgLatencyMs: latencies.length
+          ? Number((latencies.reduce((a, b) => a + b, 0) / latencies.length).toFixed(1))
+          : null,
+        p95LatencyMs: latencies.length ? percentile(latencies, 95) : null,
+        chainId: chainId || null,
+        blockNumber: blockNumber || null,
+        methodResult: probeResult,
+        error
+      };
+    })
+  );
+
+  const healthy = endpointChecks.filter((x) => x.ok);
+  if (!healthy.length) {
+    return fallbackRpcFanout(method, endpoints);
+  }
+
+  const blocks = healthy.map((x) => Number(x.blockNumber || 0)).filter((x) => x > 0);
+  const maxBlock = blocks.length ? Math.max(...blocks) : 0;
+  const minBlock = blocks.length ? Math.min(...blocks) : 0;
+  const maxBlockDrift = maxBlock && minBlock ? maxBlock - minBlock : 0;
+  const healthiestEndpoint = [...healthy].sort((a, b) => Number(a.avgLatencyMs || 1e9) - Number(b.avgLatencyMs || 1e9))[0];
+  const outlierEndpoints = healthy
+    .filter((x) => maxBlock - Number(x.blockNumber || 0) > blockDriftThreshold)
+    .map((x) => x.endpoint);
+
+  return {
+    source: 'bsc-rpc',
+    method,
+    params,
+    sampleSize,
+    timeoutMs,
+    blockDriftThreshold,
+    totalEndpoints: endpointChecks.length,
+    healthyEndpoints: healthy.length,
+    unhealthyEndpoints: endpointChecks.length - healthy.length,
+    healthiestEndpoint: healthiestEndpoint?.endpoint || null,
+    latestBlock: maxBlock || null,
+    minBlock: minBlock || null,
+    maxBlockDrift,
+    outlierEndpoints,
+    endpoints: endpointChecks
+  };
+}
+
 function bap578AdapterBlueprint(input: Record<string, unknown>) {
   const contractName = String(input.contractName || 'MyBAP578Adapter');
   const nfaInterface = String(input.nfaInterface || 'INFAOwner');
@@ -407,6 +664,168 @@ function bap578IdeaSprint(input: Record<string, unknown>) {
   };
 }
 
+function fourMemeIntegrationGuide(input: Record<string, unknown>) {
+  const command = String(input.command || 'fourmeme create --budget 0.01');
+  return {
+    skillId: 'four-meme-ai',
+    mode: 'integration-guide',
+    status: 'manual-review-required',
+    commandTemplate: command,
+    notes: [
+      'Keep this integration in explicit user-confirm mode.',
+      'Do not run wallet-signing actions automatically.',
+      'Require dry-run and parameter echo before execution.'
+    ]
+  };
+}
+
+function bscNftOpsGuide(input: Record<string, unknown>) {
+  const task = String(input.task || 'check_owner');
+  const contract = String(input.contract || '0x...');
+  const tokenId = Number(input.tokenId || 1);
+  return {
+    skillId: 'bsc-nft-ops-guide',
+    mode: 'guide',
+    riskLevel: 'medium',
+    task,
+    checklist: [
+      'Validate contract address format and chain (BSC mainnet/testnet).',
+      'Run read-only owner/tokenURI checks before any write action.',
+      'For transfers, verify recipient and approval state twice.',
+      'Log tx hash + block number for audit trail.'
+    ],
+    commandHints: {
+      ownerCheck: `erc721.ownerOf(${tokenId}) @ ${contract}`,
+      metadataCheck: `erc721.tokenURI(${tokenId}) @ ${contract}`
+    }
+  };
+}
+
+function bitagentBondingPlaybook(input: Record<string, unknown>) {
+  const action = String(input.action || 'launch');
+  const network = String(input.network || 'bsc');
+  const symbol = String(input.symbol || 'AGENT');
+  return {
+    skillId: 'bitagent-bonding-playbook',
+    mode: 'guide',
+    riskLevel: 'high',
+    action,
+    network,
+    symbol,
+    preflight: [
+      'Confirm token economics and launch parameters in plain text.',
+      'Set strict max budget / max loss before execution.',
+      'Run simulation or quote endpoint before signed transaction.'
+    ],
+    guardrails: [
+      'No autonomous key usage.',
+      'No repeated retry loops on failed trade transactions.',
+      'Always require user confirmation on final payload.'
+    ]
+  };
+}
+
+function multichainPortfolioTrackerGuide(input: Record<string, unknown>) {
+  const chains = Array.isArray(input.chains) && input.chains.length
+    ? input.chains.map((x) => String(x).toLowerCase())
+    : ['bsc', 'eth', 'tron'];
+  const wallet = String(input.wallet || '0x...');
+  return {
+    skillId: 'multichain-portfolio-tracker',
+    mode: 'guide',
+    riskLevel: 'low',
+    chains,
+    wallet,
+    outputs: [
+      'token balances by chain',
+      'portfolio allocation percentage',
+      'realized/unrealized pnl (if trade history available)',
+      'fee/gas attribution summary'
+    ],
+    implementationPlan: [
+      'Collect native + token balances from each chain.',
+      'Normalize symbols/decimals and map to quote prices.',
+      'Aggregate by asset and compute allocation/pnl.'
+    ]
+  };
+}
+
+function pancakeSwapTradingGuardGuide(input: Record<string, unknown>) {
+  const pair = String(input.pair || 'WBNB/USDT');
+  const side = String(input.side || 'buy');
+  const slippageBps = Math.max(10, Math.min(2000, Number(input.slippageBps || 100)));
+  return {
+    skillId: 'pancakeswap-trading-guard',
+    mode: 'guide',
+    riskLevel: 'high',
+    pair,
+    side,
+    slippageBps,
+    preTradeChecks: [
+      'Liquidity depth check (avoid thin pools).',
+      'Price impact estimate and max impact threshold.',
+      'Allowance/approval scope minimization.',
+      'MEV/sandwich risk awareness at current gas conditions.'
+    ],
+    failFastRules: [
+      'Abort when quote deviates beyond threshold.',
+      'Abort when route liquidity drops before submit.',
+      'Abort when gas spikes outside configured cap.'
+    ]
+  };
+}
+
+function erc8004AgentRegistryGuide(input: Record<string, unknown>) {
+  const chain = String(input.chain || 'bsc');
+  const network = String(input.network || 'mainnet');
+  const operation = String(input.operation || 'register_agent');
+  return {
+    skillId: 'erc8004-agent-registry',
+    mode: 'guide',
+    riskLevel: 'medium',
+    chain,
+    network,
+    operation,
+    workflow: [
+      'Validate registry contract addresses for selected network.',
+      'Prepare identity metadata and ownership controls.',
+      'Register identity first, then attach reputation/validation links.',
+      'Set monitoring on registry events for state consistency.'
+    ],
+    postChecks: [
+      'ownerOf(tokenId) matches operator wallet',
+      'metadata URI reachable and immutable policy documented',
+      'event indexer captures registration and updates'
+    ]
+  };
+}
+
+function predictionMarketClobGuide(input: Record<string, unknown>) {
+  const market = String(input.market || 'US-election-2028');
+  const side = String(input.side || 'YES');
+  const strategy = String(input.strategy || 'limit_ladder');
+  return {
+    skillId: 'prediction-market-clob',
+    mode: 'guide',
+    riskLevel: 'high',
+    market,
+    side,
+    strategy,
+    executionPlan: [
+      'Load market metadata and validate settlement rules.',
+      'Read orderbook depth and spread before placing orders.',
+      'Use staged limit orders instead of single large market order.',
+      'Track fills and reconcile position cost basis after each fill.'
+    ],
+    controls: [
+      'position size cap',
+      'daily max loss cap',
+      'stale order cancellation policy',
+      'withdrawal whitelist policy'
+    ]
+  };
+}
+
 async function runLocalSkill(skillId: string, input: Record<string, unknown>) {
   switch (skillId) {
     case 'ai-quick-chat': {
@@ -534,9 +953,7 @@ async function runLocalSkill(skillId: string, input: Record<string, unknown>) {
     }
 
     case 'open-interest-scan': {
-      return {
-        message: 'open-interest-scan is in phase-2 backlog for this launch build.'
-      };
+      return runOpenInterestScan(input);
     }
 
     case 'symbol-status': {
@@ -570,9 +987,7 @@ async function runLocalSkill(skillId: string, input: Record<string, unknown>) {
     }
 
     case 'bsc-rpc-fanout-check': {
-      return {
-        message: 'bsc-rpc-fanout-check is in phase-2 backlog for this launch build.'
-      };
+      return runBscRpcFanoutCheck(input);
     }
 
     case 'bap578-adapter-blueprint':
@@ -589,6 +1004,27 @@ async function runLocalSkill(skillId: string, input: Record<string, unknown>) {
 
     case 'bap578-contract-idea-sprint':
       return bap578IdeaSprint(input);
+
+    case 'four-meme-ai':
+      return fourMemeIntegrationGuide(input);
+
+    case 'bsc-nft-ops-guide':
+      return bscNftOpsGuide(input);
+
+    case 'bitagent-bonding-playbook':
+      return bitagentBondingPlaybook(input);
+
+    case 'multichain-portfolio-tracker':
+      return multichainPortfolioTrackerGuide(input);
+
+    case 'pancakeswap-trading-guard':
+      return pancakeSwapTradingGuardGuide(input);
+
+    case 'erc8004-agent-registry':
+      return erc8004AgentRegistryGuide(input);
+
+    case 'prediction-market-clob':
+      return predictionMarketClobGuide(input);
 
     default: {
       const known = Array.from(loadSkillIds()).join(', ');
