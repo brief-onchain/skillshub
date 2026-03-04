@@ -3,7 +3,22 @@
   "name": "Skills Library 3 - Ecosystem Intake",
   "version": "0.1.0",
   "description": "Non-overlap launch constraints and future intake directions.",
-  "skills": [],
+  "skills": [
+    {
+      "id": "four-meme-ai",
+      "name": "Four.Meme Agent Skill",
+      "description": "Bridges the upstream four-meme-ai CLI into SkillHub agents for create/buy/sell/send flows.",
+      "category": "Ecosystem",
+      "version": "0.1.0",
+      "author": "four-meme-community",
+      "mode": "integration",
+      "inputExample": {
+        "host": "openclaw",
+        "command": "fourmeme create --budget 0.01"
+      },
+      "installCommand": "npx skills add four-meme-community/four-meme-ai"
+    }
+  ],
   "excludedDirections": [
     {
       "slug": "openclaw-bitagent",
@@ -24,10 +39,6 @@
     {
       "slug": "pancake-swap-skills",
       "note": "No direct swap execution in first release."
-    },
-    {
-      "slug": "four-meme-ai",
-      "note": "No meme token launch workflow in first release."
     }
   ],
   "openSourceCandidates": [

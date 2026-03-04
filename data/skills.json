@@ -29,11 +29,6 @@
         "name": "pancake skills",
         "slug": "pancake-swap-skills",
         "url": "https://clawhub.ai/KJ-Script/pancake-swap-skills"
-      },
-      {
-        "name": "FourMeme",
-        "slug": "four-meme-ai",
-        "url": "https://clawhub.ai/four-meme-community/four-meme-ai"
       }
     ]
   },
@@ -114,6 +109,22 @@
       "install": {
         "command": "npx @bsc-skills/symbol-status-checker",
         "status": "planned"
+      }
+    },
+    {
+      "id": "four-meme-ai",
+      "name": "Four.Meme Agent Skill",
+      "track": "ecosystem-intake",
+      "category": "Agent Integration",
+      "summary": "Installs and enables the upstream fourmeme CLI so Hub agents can run create/buy/sell/send flows via chat.",
+      "overlapPolicy": "Allows curated meme launches while other swap/portfolio tracks stay paused.",
+      "inputExample": {
+        "host": "openclaw",
+        "command": "fourmeme create --budget 0.01"
+      },
+      "install": {
+        "command": "npx skills add four-meme-community/four-meme-ai",
+        "status": "ready"
       }
     }
   ],
