@@ -8,6 +8,7 @@
 npx @skillshub/price-snapshot
 npx @skillshub/top-movers-radar
 npx @skillshub/ai-quick-chat
+npx @skillshub/cz-style-rewrite
 npx @skillshub/bap578-adapter-blueprint
 ```
 
@@ -32,6 +33,7 @@ npx @skillshub/price-snapshot
 npx @skillshub/price-snapshot
 npx @skillshub/top-movers-radar
 npx @skillshub/ai-quick-chat
+npx @skillshub/cz-style-rewrite
 npx @skillshub/kline-brief
 npx @skillshub/symbol-status
 npx @skillshub/funding-watch

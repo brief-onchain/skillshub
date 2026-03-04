@@ -38,3 +38,12 @@ pnpm-debug.log*
 .vscode/
 
 progress/
+
+## External dataset raw caches (keep out of git)
+data/raw/ersheng/
+data/external/ersheng/
+datasets-cache/
+hf-cache/
+
+## TypeScript incremental build cache
+skillshub-web/tsconfig.tsbuildinfo

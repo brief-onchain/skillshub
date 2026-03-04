@@ -1,5 +1,6 @@
 import { loadSkillIds } from '@/lib/server/catalog';
 import { getLlmConfig } from '@/lib/server/env';
+import czStyleProfile from '@/lib/server/data/cz_style_profile.json';
 import type { PlaygroundRequest, PlaygroundResponse } from '@/lib/types';
 
 function normalizeSymbol(value: unknown, fallback = 'BTCUSDT') {
@@ -25,17 +26,31 @@ async function fetchJson(url: string, timeoutMs = 4500) {
   }
 }
 
-async function runAiQuickChat(input: Record<string, unknown>) {
+function extractChatReply(parsed: any) {
+  let reply = parsed?.choices?.[0]?.message?.content;
+  if (Array.isArray(reply)) {
+    reply = reply
+      .map((part: any) => (typeof part?.text === 'string' ? part.text : ''))
+      .join('')
+      .trim();
+  }
+  if (!reply || typeof reply !== 'string') {
+    throw new Error('LLM response missing message content');
+  }
+  return reply;
+}
+
+async function callLlmChat(opts: {
+  system: string;
+  user: string;
+  temperature?: number;
+  maxTokens?: number;
+}) {
   const llm = getLlmConfig();
   if (!llm.apiKey) {
     throw new Error(
       'Missing LLM API key. Set OPENROUTER_API_KEY (or OPENAI_API_KEY/AI_API_KEY) in server env.'
     );
-  }
-
-  const prompt = String(input.prompt || input.message || '只回复一句: AI通了').trim();
-  if (!prompt) {
-    throw new Error('prompt is required');
   }
 
   const endpoint = `${llm.apiBase.replace(/\/$/, '')}/chat/completions`;
@@ -47,14 +62,11 @@ async function runAiQuickChat(input: Record<string, unknown>) {
     },
     body: JSON.stringify({
       model: llm.model,
-      temperature: 0.2,
+      temperature: opts.temperature ?? 0.2,
+      max_tokens: opts.maxTokens,
       messages: [
-        {
-          role: 'system',
-          content:
-            'You are a concise SkillsHub verification assistant. Reply in the same language as the user.'
-        },
-        { role: 'user', content: prompt }
+        { role: 'system', content: opts.system },
+        { role: 'user', content: opts.user }
       ]
     })
   });
@@ -75,23 +87,101 @@ async function runAiQuickChat(input: Record<string, unknown>) {
     throw new Error(String(msg));
   }
 
-  let reply = parsed?.choices?.[0]?.message?.content;
-  if (Array.isArray(reply)) {
-    reply = reply
-      .map((part: any) => (typeof part?.text === 'string' ? part.text : ''))
-      .join('')
-      .trim();
+  return {
+    model: llm.model,
+    parsed,
+    reply: extractChatReply(parsed)
+  };
+}
+
+async function runAiQuickChat(input: Record<string, unknown>) {
+  const prompt = String(input.prompt || input.message || '只回复一句: AI通了').trim();
+  if (!prompt) {
+    throw new Error('prompt is required');
   }
 
-  if (!reply || typeof reply !== 'string') {
-    throw new Error('LLM response missing message content');
-  }
+  const out = await callLlmChat({
+    system: 'You are a concise SkillsHub verification assistant. Reply in the same language as the user.',
+    user: prompt,
+    temperature: 0.2,
+    maxTokens: 120
+  });
 
   return {
     provider: 'openrouter-compatible',
-    model: llm.model,
+    model: out.model,
     prompt,
-    reply
+    reply: out.reply
+  };
+}
+
+async function runCzStyleRewrite(input: Record<string, unknown>) {
+  const modeInput = String(input.mode || 'rewrite').toLowerCase();
+  const mode: 'rewrite' | 'generate' = modeInput === 'generate' ? 'generate' : 'rewrite';
+  const languageInput = String(input.language || 'auto').toLowerCase();
+  const language: 'zh' | 'en' | 'auto' =
+    languageInput === 'zh' || languageInput === 'en' ? languageInput : 'auto';
+  const maxChars = Math.max(80, Math.min(500, Number(input.maxChars || 220)));
+  const toneStrength = Math.max(1, Math.min(5, Number(input.toneStrength || 3)));
+
+  const draft = String(input.draft || '').trim();
+  const topic = String(input.topic || '').trim();
+  if (mode === 'rewrite' && !draft) {
+    throw new Error('draft is required when mode=rewrite');
+  }
+  if (mode === 'generate' && !topic) {
+    throw new Error('topic is required when mode=generate');
+  }
+
+  const profile = (czStyleProfile as any)?.speaker || {};
+  const topWords = (profile.top_words || [])
+    .slice(0, 10)
+    .map((x: any) => x.term)
+    .filter(Boolean)
+    .join(', ');
+  const topCn = (profile.top_cn_phrases || [])
+    .slice(0, 8)
+    .map((x: any) => x.term)
+    .filter(Boolean)
+    .join('，');
+  const cues = (profile.style_cues || []).join('; ');
+
+  const system = [
+    'You are a style-rewrite assistant for a crypto operations team.',
+    'Task: produce a new post inspired by CZ communication style from historical public posts.',
+    'Do NOT claim to be CZ. Do NOT fabricate facts, deals, or promises.',
+    'Keep concise, operator-like, outcome-oriented tone with high clarity.',
+    `Target length: <= ${maxChars} chars.`,
+    `Tone strength: ${toneStrength}/5.`,
+    `Language target: ${language}.`,
+    `Profile cues: ${cues || 'concise, decisive, pragmatic'}.`,
+    `Profile top words: ${topWords || 'N/A'}.`,
+    `Profile top CN phrases: ${topCn || 'N/A'}.`
+  ].join(' ');
+
+  const user = mode === 'rewrite'
+    ? `Rewrite this draft into CZ-inspired style:\n${draft}`
+    : `Generate one CZ-inspired post about this topic:\n${topic}`;
+
+  const out = await callLlmChat({
+    system,
+    user,
+    temperature: 0.35,
+    maxTokens: 220
+  });
+
+  return {
+    provider: 'openrouter-compatible',
+    model: out.model,
+    mode,
+    language,
+    maxChars,
+    toneStrength,
+    profileStats: {
+      count: profile.count || 0,
+      avgChars: profile.avg_chars || null
+    },
+    output: out.reply
   };
 }
 
@@ -321,6 +411,10 @@ async function runLocalSkill(skillId: string, input: Record<string, unknown>) {
   switch (skillId) {
     case 'ai-quick-chat': {
       return runAiQuickChat(input);
+    }
+
+    case 'cz-style-rewrite': {
+      return runCzStyleRewrite(input);
     }
 
     case 'price-snapshot': {

@@ -18,6 +18,23 @@
       "installCommand": "npx @skillshub/ai-quick-chat"
     },
     {
+      "id": "cz-style-rewrite",
+      "name": "CZ Style Rewrite",
+      "description": "Rewrites or generates a post in CZ-inspired style using dataset-derived profile cues.",
+      "category": "AI Style",
+      "version": "0.1.0",
+      "author": "skillshub",
+      "mode": "live",
+      "inputExample": {
+        "mode": "rewrite",
+        "draft": "市场有波动，大家别慌，我们会持续优化产品和风控。",
+        "language": "zh",
+        "toneStrength": 3,
+        "maxChars": 220
+      },
+      "installCommand": "npx @skillshub/cz-style-rewrite"
+    },
+    {
       "id": "price-snapshot",
       "name": "Price Snapshot",
       "description": "Fetches spot last price and 24h range for one trading pair.",

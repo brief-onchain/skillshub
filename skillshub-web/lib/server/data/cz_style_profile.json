@@ -1,0 +1,268 @@
+{
+  "source": {
+    "dataset": "123olp/ersheng-cz-heyi-full",
+    "dataset_url": "https://huggingface.co/datasets/123olp/ersheng-cz-heyi-full/resolve/main/data/processed/all_hydrated.jsonl",
+    "generated_at": "2026-03-03T17:32:40.725Z",
+    "max_lines": 80000
+  },
+  "notes": [
+    "Derived profile only. Raw tweet corpora are not bundled in this repository.",
+    "Use profile as style guidance, not person impersonation.",
+    "This profile currently targets CZ only."
+  ],
+  "speaker": {
+    "username": "cz_binance",
+    "count": 6839,
+    "avg_chars": 104.64,
+    "avg_words": 17.76,
+    "punctuation": {
+      "exclamation": 641,
+      "question": 747,
+      "ellipsis": 489
+    },
+    "top_words": [
+      {
+        "term": "binance",
+        "count": 1214
+      },
+      {
+        "term": "crypto",
+        "count": 782
+      },
+      {
+        "term": "bnb",
+        "count": 593
+      },
+      {
+        "term": "more",
+        "count": 532
+      },
+      {
+        "term": "don't",
+        "count": 449
+      },
+      {
+        "term": "people",
+        "count": 438
+      },
+      {
+        "term": "there",
+        "count": 392
+      },
+      {
+        "term": "now",
+        "count": 368
+      },
+      {
+        "term": "some",
+        "count": 355
+      },
+      {
+        "term": "one",
+        "count": 344
+      },
+      {
+        "term": "bitcoin",
+        "count": 340
+      },
+      {
+        "term": "time",
+        "count": 333
+      },
+      {
+        "term": "it's",
+        "count": 277
+      },
+      {
+        "term": "good",
+        "count": 272
+      },
+      {
+        "term": "few",
+        "count": 263
+      },
+      {
+        "term": "know",
+        "count": 262
+      },
+      {
+        "term": "like",
+        "count": 255
+      },
+      {
+        "term": "many",
+        "count": 250
+      },
+      {
+        "term": "see",
+        "count": 246
+      },
+      {
+        "term": "still",
+        "count": 245
+      },
+      {
+        "term": "new",
+        "count": 242
+      },
+      {
+        "term": "users",
+        "count": 234
+      },
+      {
+        "term": "than",
+        "count": 232
+      },
+      {
+        "term": "years",
+        "count": 225
+      },
+      {
+        "term": "get",
+        "count": 219
+      },
+      {
+        "term": "team",
+        "count": 212
+      },
+      {
+        "term": "other",
+        "count": 210
+      },
+      {
+        "term": "only",
+        "count": 203
+      },
+      {
+        "term": "use",
+        "count": 197
+      },
+      {
+        "term": "too",
+        "count": 196
+      }
+    ],
+    "top_cn_phrases": [
+      {
+        "term": "感谢",
+        "count": 4
+      },
+      {
+        "term": "币安人生",
+        "count": 4
+      },
+      {
+        "term": "是的",
+        "count": 3
+      },
+      {
+        "term": "没事",
+        "count": 3
+      },
+      {
+        "term": "去中心化",
+        "count": 3
+      },
+      {
+        "term": "一样",
+        "count": 2
+      },
+      {
+        "term": "支持一下",
+        "count": 2
+      },
+      {
+        "term": "我从来不追快钱",
+        "count": 2
+      },
+      {
+        "term": "我是",
+        "count": 2
+      },
+      {
+        "term": "年的",
+        "count": 2
+      },
+      {
+        "term": "这年头",
+        "count": 2
+      },
+      {
+        "term": "销毁",
+        "count": 2
+      },
+      {
+        "term": "年了",
+        "count": 2
+      },
+      {
+        "term": "个月",
+        "count": 2
+      },
+      {
+        "term": "学历",
+        "count": 2
+      },
+      {
+        "term": "智商",
+        "count": 2
+      },
+      {
+        "term": "哈哈",
+        "count": 2
+      },
+      {
+        "term": "做为",
+        "count": 2
+      },
+      {
+        "term": "大表哥",
+        "count": 2
+      },
+      {
+        "term": "总结的很好",
+        "count": 2
+      },
+      {
+        "term": "加油",
+        "count": 2
+      },
+      {
+        "term": "有偏见",
+        "count": 2
+      },
+      {
+        "term": "招商",
+        "count": 2
+      },
+      {
+        "term": "均价",
+        "count": 2
+      },
+      {
+        "term": "买了",
+        "count": 2
+      },
+      {
+        "term": "去中心化的世界里",
+        "count": 2
+      },
+      {
+        "term": "每个人",
+        "count": 2
+      },
+      {
+        "term": "支持",
+        "count": 2
+      },
+      {
+        "term": "水军",
+        "count": 2
+      },
+      {
+        "term": "仇恨会",
+        "count": 1
+      }
+    ]
+  }
+}

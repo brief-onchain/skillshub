@@ -92,16 +92,46 @@ export function getApiConfig() {
 }
 
 export function getLlmConfig() {
+  const openrouterBase = process.env.OPENROUTER_BASE_URL || 'https://openrouter.ai/api/v1';
+  const openaiBase = process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1';
+  const openrouterKey = process.env.OPENROUTER_API_KEY || '';
+  const openaiKey = process.env.OPENAI_API_KEY || '';
+  const genericKey = process.env.AI_API_KEY || '';
+
+  // Provider-aware fallback:
+  // 1) Prefer explicit OpenRouter config when OPENROUTER_API_KEY exists.
+  // 2) Else prefer OpenAI config when OPENAI_API_KEY exists.
+  // 3) Finally use generic AI_API_KEY with OPENAI_BASE_URL/OPENROUTER_BASE_URL/default base.
+  if (openrouterKey) {
+    return {
+      apiBase: openrouterBase,
+      apiKey: openrouterKey,
+      model:
+        process.env.OPENROUTER_MODEL ||
+        process.env.OPENAI_MODEL ||
+        process.env.SKILLS_API_MODEL ||
+        'openai/gpt-4o-mini'
+    };
+  }
+
+  if (openaiKey) {
+    return {
+      apiBase: openaiBase,
+      apiKey: openaiKey,
+      model:
+        process.env.OPENAI_MODEL ||
+        process.env.OPENROUTER_MODEL ||
+        process.env.SKILLS_API_MODEL ||
+        'gpt-4o-mini'
+    };
+  }
+
   return {
     apiBase:
       process.env.OPENAI_BASE_URL ||
       process.env.OPENROUTER_BASE_URL ||
-      'https://openrouter.ai/api/v1',
-    apiKey:
-      process.env.OPENAI_API_KEY ||
-      process.env.AI_API_KEY ||
-      process.env.OPENROUTER_API_KEY ||
-      '',
+      openrouterBase,
+    apiKey: genericKey,
     model:
       process.env.OPENAI_MODEL ||
       process.env.OPENROUTER_MODEL ||
