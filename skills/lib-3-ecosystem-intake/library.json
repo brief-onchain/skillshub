@@ -12,6 +12,10 @@
       "version": "0.1.0",
       "author": "four-meme-community",
       "mode": "integration",
+      "provenance": "adapted",
+      "sourceAttribution": "four-meme-community/four-meme-ai",
+      "sourceUrl": "https://www.npmjs.com/package/four-meme-ai",
+      "maintainedBy": "SkillsHub",
       "inputExample": {
         "host": "ecosystem-cli",
         "command": "fourmeme create --budget 0.01"
@@ -26,6 +30,9 @@
       "version": "0.1.0",
       "author": "skillshub-curation",
       "mode": "guide",
+      "provenance": "curated",
+      "sourceAttribution": "Community open-source reference set",
+      "maintainedBy": "SkillsHub",
       "inputExample": {
         "task": "check_owner",
         "contract": "0x...",
@@ -41,6 +48,9 @@
       "version": "0.1.0",
       "author": "skillshub-curation",
       "mode": "guide",
+      "provenance": "curated",
+      "sourceAttribution": "Community open-source reference set",
+      "maintainedBy": "SkillsHub",
       "inputExample": {
         "action": "launch",
         "network": "bsc",
@@ -56,6 +66,9 @@
       "version": "0.1.0",
       "author": "skillshub-curation",
       "mode": "guide",
+      "provenance": "curated",
+      "sourceAttribution": "Community open-source reference set",
+      "maintainedBy": "SkillsHub",
       "inputExample": {
         "chains": [
           "bsc",
@@ -74,6 +87,9 @@
       "version": "0.1.0",
       "author": "skillshub-curation",
       "mode": "guide",
+      "provenance": "curated",
+      "sourceAttribution": "Community open-source reference set",
+      "maintainedBy": "SkillsHub",
       "inputExample": {
         "pair": "WBNB/USDT",
         "side": "buy",
@@ -89,6 +105,9 @@
       "version": "0.1.0",
       "author": "skillshub-curation",
       "mode": "guide",
+      "provenance": "curated",
+      "sourceAttribution": "Community open-source reference set",
+      "maintainedBy": "SkillsHub",
       "inputExample": {
         "chain": "bsc",
         "network": "mainnet",
@@ -104,6 +123,9 @@
       "version": "0.1.0",
       "author": "skillshub-curation",
       "mode": "guide",
+      "provenance": "curated",
+      "sourceAttribution": "Community open-source reference set",
+      "maintainedBy": "SkillsHub",
       "inputExample": {
         "market": "US-election-2028",
         "side": "YES",

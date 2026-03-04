@@ -15,11 +15,11 @@ const zh: TranslationKeys = {
 
   // Hero
   hero: {
-    badge: '币安 / BSC 技能中心',
+    badge: 'BSC 开发者技能市场',
     titleLine1: '链上智能',
     titleLine2: '模块释放',
-    subtitle: '面向币安智能链生态的模块化链上技能。',
-    subtitleLine2: '构建、测试、部署 — 一站搞定。',
+    subtitle: '原创 SkillsHub 模块 + 精选开源技能，统一在一个入口。',
+    subtitleLine2: '按需查找、安装、运行，团队协作更快。',
     ctaPlayground: '启动试验场',
   },
 
@@ -32,13 +32,18 @@ const zh: TranslationKeys = {
 
   // SkillsGrid
   skills: {
-    title: '入门技能包',
-    subtitle: '生产就绪的技能模块，标准化接口。安装、配置、运行，几分钟搞定。',
+    title: '技能大集合',
+    subtitle: '原创能力与精选开源技能一起展示，面向 BSC 实战场景。',
     modulesLabel: '个模块',
     availableNow: '现已可用',
     github: 'GITHUB',
     details: '详情',
     tryIt: '试一试',
+    source: '来源',
+    maintainedBy: '维护方',
+    provenanceOriginal: '原创',
+    provenanceCurated: '精选',
+    provenanceAdapted: '适配',
   },
 
   // Playground
@@ -82,6 +87,10 @@ const zh: TranslationKeys = {
     backToIndex: '← 返回技能列表',
     installCommand: '安装命令',
     exampleInput: '示例输入',
+    provenance: '归属类型',
+    source: '来源',
+    license: '许可',
+    maintainedBy: '维护方',
     tryInPlayground: '在试验场中试用',
     openInGithub: '在 GitHub 中打开',
     viewAllSkills: '查看所有技能',

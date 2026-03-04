@@ -14,6 +14,17 @@ export default function SkillsGrid() {
   const containerRef = useRef<HTMLDivElement>(null);
   const repoBase = process.env.NEXT_PUBLIC_SKILLS_GITHUB_REPO || '';
 
+  const provenanceLabel = (skill: Skill) => {
+    switch (skill.provenance) {
+      case 'curated':
+        return t.skills.provenanceCurated;
+      case 'adapted':
+        return t.skills.provenanceAdapted;
+      default:
+        return t.skills.provenanceOriginal;
+    }
+  };
+
   useEffect(() => {
     ApiClient.getSkills().then(setSkills);
   }, []);
@@ -73,6 +84,9 @@ export default function SkillsGrid() {
                 <span className="text-text-sub/70 text-xs font-mono border border-white/10 px-2 py-1 rounded uppercase">
                   {skill.mode || 'live'}
                 </span>
+                <span className="ml-2 text-text-sub/70 text-xs font-mono border border-white/10 px-2 py-1 rounded uppercase">
+                  {provenanceLabel(skill)}
+                </span>
               </div>
               
               <h3 className="text-2xl font-bold text-text-main mb-3 font-heading group-hover:text-gold transition-colors">
@@ -82,6 +96,17 @@ export default function SkillsGrid() {
               <p className="text-text-sub text-sm mb-6 min-h-[3rem]">
                 {skill.description}
               </p>
+
+              {skill.provenance !== 'original' ? (
+                <div className="mb-6 flex flex-col gap-1">
+                  <span className="text-[11px] text-text-sub/60 font-mono uppercase">
+                    {t.skills.source}: {skill.sourceAttribution || 'Community Open-Source'}
+                  </span>
+                  <span className="text-[11px] text-text-sub/50 font-mono uppercase">
+                    {t.skills.maintainedBy}: {skill.maintainedBy || 'SkillsHub'}
+                  </span>
+                </div>
+              ) : null}
 
               <div className="flex items-center justify-between pt-6 border-t border-white/5">
                 <span className="text-text-sub/40 font-mono text-xs">v{skill.version}</span>

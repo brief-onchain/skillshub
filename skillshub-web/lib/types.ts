@@ -5,7 +5,12 @@ export interface Skill {
   category: string;
   version: string;
   author?: string;
-  mode?: 'live' | 'guide';
+  mode?: 'live' | 'guide' | 'integration';
+  provenance?: 'original' | 'curated' | 'adapted';
+  sourceAttribution?: string;
+  sourceUrl?: string;
+  sourceLicense?: string;
+  maintainedBy?: string;
   inputExample?: Record<string, unknown>;
   installCommand?: string;
   libraryId?: string;

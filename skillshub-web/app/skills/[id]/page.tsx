@@ -50,6 +50,13 @@ export default function SkillDetailPage({ params }: Props) {
       ? `${repoBase.replace(/\/$/, '')}/tree/main/${skill.repoPath}`
       : '';
 
+  const provenanceLabel =
+    skill.provenance === 'curated'
+      ? t.skills.provenanceCurated
+      : skill.provenance === 'adapted'
+        ? t.skills.provenanceAdapted
+        : t.skills.provenanceOriginal;
+
   return (
     <main className="min-h-screen bg-bg text-text-main">
       <div className="container mx-auto px-6 py-12">
@@ -64,6 +71,9 @@ export default function SkillDetailPage({ params }: Props) {
             </span>
             <span className="text-xs font-mono px-2 py-1 border border-white/10 rounded text-text-sub uppercase">
               {skill.mode || 'live'}
+            </span>
+            <span className="text-xs font-mono px-2 py-1 border border-white/10 rounded text-text-sub uppercase">
+              {provenanceLabel}
             </span>
             <span className="text-xs font-mono text-text-sub">v{skill.version}</span>
           </div>
@@ -82,6 +92,44 @@ export default function SkillDetailPage({ params }: Props) {
               <pre className="text-sm font-mono overflow-x-auto">
                 {JSON.stringify(skill.inputExample || {}, null, 2)}
               </pre>
+            </div>
+
+            <div className="p-5 bg-bg border border-white/10 rounded-lg lg:col-span-2">
+              <h2 className="text-gold font-mono text-xs uppercase tracking-wider mb-3">{t.skillDetail.provenance}</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <div className="text-text-sub/70 mb-1">{t.skillDetail.provenance}</div>
+                  <div className="font-mono text-text-main">{provenanceLabel}</div>
+                </div>
+                <div>
+                  <div className="text-text-sub/70 mb-1">{t.skillDetail.maintainedBy}</div>
+                  <div className="font-mono text-text-main">{skill.maintainedBy || 'SkillsHub'}</div>
+                </div>
+                <div>
+                  <div className="text-text-sub/70 mb-1">{t.skillDetail.source}</div>
+                  {skill.sourceUrl ? (
+                    <a
+                      href={skill.sourceUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="font-mono text-gold hover:text-white transition-colors break-all"
+                    >
+                      {skill.sourceAttribution || skill.sourceUrl}
+                    </a>
+                  ) : (
+                    <div className="font-mono text-text-main">{skill.sourceAttribution || 'SkillsHub Original'}</div>
+                  )}
+                </div>
+                <div>
+                  <div className="text-text-sub/70 mb-1">{t.skillDetail.license}</div>
+                  <div className="font-mono text-text-main">
+                    {skill.sourceLicense ||
+                      (skill.provenance === 'original'
+                        ? 'SkillsHub repository terms'
+                        : 'Upstream repository terms')}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 

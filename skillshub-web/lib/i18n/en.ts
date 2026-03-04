@@ -13,11 +13,11 @@ const en = {
 
   // Hero
   hero: {
-    badge: 'Binance / BSC Skills Hub',
+    badge: 'Skills Marketplace for BSC Builders',
     titleLine1: 'INTELLIGENCE',
     titleLine2: 'UNLEASHED',
-    subtitle: 'Modular on-chain skills for the Binance Smart Chain ecosystem.',
-    subtitleLine2: 'Build, test, and deploy — all from one hub.',
+    subtitle: 'A single hub for original SkillsHub modules and curated open-source skills.',
+    subtitleLine2: 'Find, install, and run what your team needs in one place.',
     ctaPlayground: 'LAUNCH PLAYGROUND',
   },
 
@@ -30,13 +30,18 @@ const en = {
 
   // SkillsGrid
   skills: {
-    title: 'STARTER SKILLS PACK',
-    subtitle: 'Production-ready skill modules with standardized interfaces. Install, configure, and run in minutes.',
+    title: 'SKILL MARKETPLACE',
+    subtitle: 'Original builds plus curated open-source skills, organized for practical BSC use.',
     modulesLabel: 'MODULES',
     availableNow: 'Available Now',
     github: 'GITHUB',
     details: 'DETAILS',
     tryIt: 'TRY IT',
+    source: 'Source',
+    maintainedBy: 'Maintained by',
+    provenanceOriginal: 'ORIGINAL',
+    provenanceCurated: 'CURATED',
+    provenanceAdapted: 'ADAPTED',
   },
 
   // Playground
@@ -80,6 +85,10 @@ const en = {
     backToIndex: '← Back to Skills Index',
     installCommand: 'Install Command',
     exampleInput: 'Example Input',
+    provenance: 'Provenance',
+    source: 'Source',
+    license: 'License',
+    maintainedBy: 'Maintained by',
     tryInPlayground: 'Try in Playground',
     openInGithub: 'Open in GitHub',
     viewAllSkills: 'View All Skills',

@@ -18,6 +18,28 @@ interface LibraryFile {
   openSourceCandidates?: OpenSourceCandidate[];
 }
 
+function inferProvenance(skill: Skill, libraryId: string): Skill['provenance'] {
+  if (skill.provenance) {
+    return skill.provenance;
+  }
+  if (libraryId === 'lib-3-ecosystem-intake') {
+    return 'curated';
+  }
+  return 'original';
+}
+
+function enrichSkill(skill: Skill, libraryId: string): Skill {
+  const provenance = inferProvenance(skill, libraryId);
+  return {
+    ...skill,
+    provenance,
+    maintainedBy: skill.maintainedBy || 'SkillsHub',
+    sourceAttribution:
+      skill.sourceAttribution ||
+      (provenance === 'original' ? 'SkillsHub Original' : 'Community Open-Source Reference')
+  };
+}
+
 function resolveSkillsRoot() {
   const explicit = process.env.SKILLS_ROOT_PATH;
   if (explicit && fs.existsSync(explicit)) {
@@ -90,7 +112,7 @@ function loadLibraries(): {
         : undefined;
 
       skills.push({
-        ...skill,
+        ...enrichSkill(skill, parsed.libraryId),
         libraryId: parsed.libraryId,
         libraryName: parsed.name,
         repoPath
