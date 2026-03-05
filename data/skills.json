@@ -126,6 +126,74 @@
         "command": "npx skills add four-meme-community/four-meme-ai",
         "status": "ready"
       }
+    },
+    {
+      "id": "four-meme-create-pipeline",
+      "name": "Four.Meme Create Pipeline",
+      "track": "ecosystem-intake",
+      "category": "Launch Workflow",
+      "summary": "Two-step create flow for Four.meme token launch (create-api -> create-chain) with mandatory confirmation gates.",
+      "overlapPolicy": "Guide mode only; no automatic chain writes without explicit confirmation.",
+      "inputExample": {
+        "action": "create_token",
+        "symbol": "MAC",
+        "budgetBnb": 0.01
+      },
+      "install": {
+        "command": "npx @skillshub/four-meme-create-pipeline",
+        "status": "planned"
+      }
+    },
+    {
+      "id": "four-meme-trade-playbook",
+      "name": "Four.Meme Trade Playbook",
+      "track": "ecosystem-intake",
+      "category": "Trading Guard",
+      "summary": "Quote-first buy/sell execution guardrails for Four.meme with slippage and loss limits.",
+      "overlapPolicy": "No autonomous hot-wallet loop; human confirmation required for every order.",
+      "inputExample": {
+        "action": "buy",
+        "tokenAddress": "0x...",
+        "amountBnb": 0.2
+      },
+      "install": {
+        "command": "npx @skillshub/four-meme-trade-playbook",
+        "status": "planned"
+      }
+    },
+    {
+      "id": "four-meme-agentic-ops",
+      "name": "Four.Meme Agentic Ops",
+      "track": "ecosystem-intake",
+      "category": "Agentic Orchestration",
+      "summary": "Human-in-the-loop agentic loop for candidate discovery, scoring, execution, and monitoring on Four.meme.",
+      "overlapPolicy": "Assistive mode by default; no unattended execution.",
+      "inputExample": {
+        "goal": "momentum_entry",
+        "riskTier": "medium",
+        "maxCapitalBnb": 0.6
+      },
+      "install": {
+        "command": "npx @skillshub/four-meme-agentic-ops",
+        "status": "planned"
+      }
+    },
+    {
+      "id": "erc8004-fast-auth",
+      "name": "ERC8004 Fast Auth",
+      "track": "ecosystem-intake",
+      "category": "Identity Ops",
+      "summary": "Quick authorization and revoke checklist for ERC-8004 agent identity based on ERC-721 operator model.",
+      "overlapPolicy": "Least-privilege scope and short TTL; always include revoke step.",
+      "inputExample": {
+        "operation": "grant_operator",
+        "agentId": 1,
+        "operator": "0x..."
+      },
+      "install": {
+        "command": "npx @skillshub/erc8004-fast-auth",
+        "status": "planned"
+      }
     }
   ],
   "openSourceCandidates": [

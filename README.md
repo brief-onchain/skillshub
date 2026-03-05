@@ -63,6 +63,10 @@ npx @skillshub/bitagent-bonding-playbook
 npx @skillshub/multichain-portfolio-tracker
 npx @skillshub/pancakeswap-trading-guard
 npx @skillshub/erc8004-agent-registry
+npx @skillshub/erc8004-fast-auth
+npx @skillshub/four-meme-create-pipeline
+npx @skillshub/four-meme-trade-playbook
+npx @skillshub/four-meme-agentic-ops
 npx @skillshub/prediction-market-clob
 npx skills add four-meme-community/four-meme-ai
 ```

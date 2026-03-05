@@ -23,6 +23,85 @@
       "installCommand": "npx skills add four-meme-community/four-meme-ai"
     },
     {
+      "id": "four-meme-create-pipeline",
+      "name": "Four.Meme Create Pipeline",
+      "description": "Plans and executes the two-step Four.meme token creation flow (create-api -> create-chain) with mandatory confirmations and key/fee checks.",
+      "category": "Ecosystem",
+      "version": "0.1.0",
+      "author": "skillshub-curation",
+      "mode": "guide",
+      "provenance": "curated",
+      "sourceAttribution": "fourmeme official CLI and protocol docs",
+      "sourceUrl": "https://www.npmjs.com/package/four-meme-ai",
+      "maintainedBy": "SkillsHub",
+      "inputExample": {
+        "action": "create_token",
+        "network": "bsc",
+        "symbol": "MEME",
+        "budgetBnb": 0.01
+      },
+      "installCommand": "npx @skillshub/four-meme-create-pipeline"
+    },
+    {
+      "id": "four-meme-trade-playbook",
+      "name": "Four.Meme Trade Playbook",
+      "description": "Builds quote-first buy/sell execution plans on Four.meme with slippage, max-loss, and post-trade reconciliation guardrails.",
+      "category": "Ecosystem",
+      "version": "0.1.0",
+      "author": "skillshub-curation",
+      "mode": "guide",
+      "provenance": "curated",
+      "sourceAttribution": "fourmeme official CLI and protocol docs",
+      "sourceUrl": "https://www.npmjs.com/package/four-meme-ai",
+      "maintainedBy": "SkillsHub",
+      "inputExample": {
+        "action": "buy",
+        "tokenAddress": "0x...",
+        "amountBnb": 0.2,
+        "maxSlippageBps": 150
+      },
+      "installCommand": "npx @skillshub/four-meme-trade-playbook"
+    },
+    {
+      "id": "four-meme-agentic-ops",
+      "name": "Four.Meme Agentic Ops",
+      "description": "Orchestrates agentic Four.meme loops (discover -> score -> confirm -> execute -> monitor) with read-first safety gates.",
+      "category": "Ecosystem",
+      "version": "0.1.0",
+      "author": "skillshub-curation",
+      "mode": "guide",
+      "provenance": "curated",
+      "sourceAttribution": "fourmeme official CLI and protocol docs",
+      "sourceUrl": "https://www.npmjs.com/package/four-meme-ai",
+      "maintainedBy": "SkillsHub",
+      "inputExample": {
+        "goal": "momentum_entry",
+        "riskTier": "medium",
+        "confirmationMode": "human_in_the_loop"
+      },
+      "installCommand": "npx @skillshub/four-meme-agentic-ops"
+    },
+    {
+      "id": "erc8004-fast-auth",
+      "name": "ERC8004 Fast Auth",
+      "description": "Provides fast ERC-8004/ERC-721 operator authorization and revoke runbook for agent wallets with least-privilege controls.",
+      "category": "Ecosystem",
+      "version": "0.1.0",
+      "author": "skillshub-curation",
+      "mode": "guide",
+      "provenance": "curated",
+      "sourceAttribution": "ERC-8004 draft spec plus fourmeme 8004 CLI hooks",
+      "sourceUrl": "https://ercs.ethereum.org/ERCS/erc-8004",
+      "maintainedBy": "SkillsHub",
+      "inputExample": {
+        "operation": "grant_operator",
+        "agentId": 1,
+        "operator": "0x...",
+        "scope": "session"
+      },
+      "installCommand": "npx @skillshub/erc8004-fast-auth"
+    },
+    {
       "id": "bsc-nft-ops-guide",
       "name": "BSC NFT Ops Guide",
       "description": "Guides ERC-721 metadata, ownership checks, and transfer-safe operational flow on BSC.",
