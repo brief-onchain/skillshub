@@ -1,9 +1,9 @@
 ---
 name: four_meme_one_stop_bsc
-description: Runs a one-stop Four.meme workflow on BSC that combines token launch, buy and sell execution, ERC8004 identity setup, and fast operator authorization with revoke discipline. Use when users ask for an end-to-end BSC execution playbook instead of separate skills.
+description: Runs a one-stop Four.meme workflow that combines token launch, buy execution, tweet material generation, ERC8004 identity setup, and fast operator authorization with revoke discipline. Use when users ask for an end-to-end Four.meme execution playbook instead of separate skills.
 ---
 
-# Four.Meme One-Stop BSC
+# Four.Meme One-Stop Launch
 
 ## Usage
 
@@ -16,7 +16,6 @@ description: Runs a one-stop Four.meme workflow on BSC that combines token launc
 ```json
 {
   "goal": "one_stop_flow",
-  "network": "bsc",
   "create": {
     "name": "Meme Agent Coin",
     "symbol": "MAC",
@@ -61,14 +60,23 @@ description: Runs a one-stop Four.meme workflow on BSC that combines token launc
    - grant: `approve` or `setApprovalForAll(..., true)`
    - verify: `getApproved` or `isApprovedForAll`
    - revoke: `approve(address(0), agentId)` or `setApprovalForAll(..., false)`
-6. Reconcile all writes with events:
+6. Generate tweet materials package (single tweet + thread + CTA):
+   - Summary tweet: project hook + token symbol + launch context + risk note.
+   - Thread draft (3-5 posts): why now, what utility, how to participate.
+   - CTA variants: buy-in prompt, community invite, and risk disclaimer.
+   - Optional style pass:
+     ```bash
+     # local rewrite style helper if needed
+     npx @skillshub/cz-style-rewrite
+     ```
+7. Reconcile all writes with events:
    ```bash
    npx fourmeme events <fromBlock> [toBlock]
    ```
 
 ## Mandatory Safety Rules
 
-- Restrict network to BSC for all write operations.
+- Follow Four.meme current supported-chain constraints in runtime config.
 - Require explicit user confirmation for create, buy, sell, grant, and revoke.
 - Never accept plaintext private keys in conversation.
 - Keep operator scope minimal and revoke immediately after delegated actions.

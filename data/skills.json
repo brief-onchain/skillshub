@@ -180,14 +180,19 @@
     },
     {
       "id": "four-meme-one-stop-bsc",
-      "name": "Four.Meme One-Stop BSC",
+      "name": "Four.Meme One-Stop Launch",
       "track": "ecosystem-intake",
       "category": "One-Stop Workflow",
-      "summary": "One-stop BSC playbook for Four.meme launch, buy or sell, ERC8004 identity prep, and fast auth with revoke controls.",
-      "overlapPolicy": "BSC-only and human-confirmed writes; no unattended hot-wallet automation.",
+      "summary": "One-stop Four.meme playbook for token launch, buy execution, tweet material generation, ERC8004 identity prep, and fast auth with revoke controls.",
+      "overlapPolicy": "Human-confirmed writes only; no unattended hot-wallet automation.",
       "inputExample": {
         "goal": "one_stop_flow",
-        "network": "bsc",
+        "actionSet": [
+          "create",
+          "buy",
+          "tweet_materials",
+          "erc8004_auth"
+        ],
         "riskTier": "medium"
       },
       "install": {

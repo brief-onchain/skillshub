@@ -83,8 +83,8 @@
     },
     {
       "id": "four-meme-one-stop-bsc",
-      "name": "Four.Meme One-Stop BSC",
-      "description": "Provides one-stop BSC workflow for Four.meme: create token, quote and trade, ERC8004 identity checks, and operator auth/revoke controls.",
+      "name": "Four.Meme One-Stop Launch",
+      "description": "Provides one-stop Four.meme workflow: create token, buy execution, tweet material generation, ERC8004 identity checks, and operator auth/revoke controls.",
       "category": "Ecosystem",
       "version": "0.1.0",
       "author": "skillshub-curation",
@@ -95,10 +95,10 @@
       "maintainedBy": "SkillsHub",
       "inputExample": {
         "goal": "one_stop_flow",
-        "network": "bsc",
         "actionSet": [
           "create",
           "buy",
+          "tweet_materials",
           "erc8004_auth"
         ],
         "riskTier": "medium"
