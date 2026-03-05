@@ -82,6 +82,30 @@
       "installCommand": "npx @skillshub/four-meme-agentic-ops"
     },
     {
+      "id": "four-meme-one-stop-bsc",
+      "name": "Four.Meme One-Stop BSC",
+      "description": "Provides one-stop BSC workflow for Four.meme: create token, quote and trade, ERC8004 identity checks, and operator auth/revoke controls.",
+      "category": "Ecosystem",
+      "version": "0.1.0",
+      "author": "skillshub-curation",
+      "mode": "guide",
+      "provenance": "curated",
+      "sourceAttribution": "fourmeme official CLI and ERC-8004 draft references",
+      "sourceUrl": "https://www.npmjs.com/package/four-meme-ai",
+      "maintainedBy": "SkillsHub",
+      "inputExample": {
+        "goal": "one_stop_flow",
+        "network": "bsc",
+        "actionSet": [
+          "create",
+          "buy",
+          "erc8004_auth"
+        ],
+        "riskTier": "medium"
+      },
+      "installCommand": "npx @skillshub/four-meme-one-stop-bsc"
+    },
+    {
       "id": "erc8004-fast-auth",
       "name": "ERC8004 Fast Auth",
       "description": "Provides fast ERC-8004/ERC-721 operator authorization and revoke runbook for agent wallets with least-privilege controls.",

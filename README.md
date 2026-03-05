@@ -67,6 +67,7 @@ npx @skillshub/erc8004-fast-auth
 npx @skillshub/four-meme-create-pipeline
 npx @skillshub/four-meme-trade-playbook
 npx @skillshub/four-meme-agentic-ops
+npx @skillshub/four-meme-one-stop-bsc
 npx @skillshub/prediction-market-clob
 npx skills add four-meme-community/four-meme-ai
 ```

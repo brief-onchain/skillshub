@@ -179,6 +179,23 @@
       }
     },
     {
+      "id": "four-meme-one-stop-bsc",
+      "name": "Four.Meme One-Stop BSC",
+      "track": "ecosystem-intake",
+      "category": "One-Stop Workflow",
+      "summary": "One-stop BSC playbook for Four.meme launch, buy or sell, ERC8004 identity prep, and fast auth with revoke controls.",
+      "overlapPolicy": "BSC-only and human-confirmed writes; no unattended hot-wallet automation.",
+      "inputExample": {
+        "goal": "one_stop_flow",
+        "network": "bsc",
+        "riskTier": "medium"
+      },
+      "install": {
+        "command": "npx @skillshub/four-meme-one-stop-bsc",
+        "status": "planned"
+      }
+    },
+    {
       "id": "erc8004-fast-auth",
       "name": "ERC8004 Fast Auth",
       "track": "ecosystem-intake",

@@ -19,7 +19,7 @@ description: Plans and executes Four.meme two-step token creation (create-api th
   "network": "bsc",
   "name": "Meme Agent Coin",
   "symbol": "MAC",
-  "description": "Agent launch token for campaign",
+  "description": "Agent launch token for BSC growth",
   "logoPath": "./assets/mac.png",
   "label": "Meme",
   "budgetBnb": 0.01,
