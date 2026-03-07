@@ -106,6 +106,69 @@
       "installCommand": "npx @skillshub/four-meme-one-stop-bsc"
     },
     {
+      "id": "four-meme-graduation-radar",
+      "name": "Four.Meme Graduation Radar",
+      "description": "Tracks graduation and migration signals from Four.meme bonding curves to Pancake liquidity using rankings, listing flags, and LiquidityAdded events.",
+      "category": "Ecosystem",
+      "version": "0.1.0",
+      "author": "skillshub-curation",
+      "mode": "guide",
+      "provenance": "curated",
+      "sourceAttribution": "four-meme-community/four-meme-ai + Bitquery Four Meme API",
+      "sourceUrl": "https://github.com/four-meme-community/four-meme-ai",
+      "maintainedBy": "SkillsHub",
+      "inputExample": {
+        "action": "scan_graduation",
+        "orderBy": "Graduated",
+        "lookbackBlocks": 1200,
+        "maxCandidates": 20
+      },
+      "installCommand": "npx @skillshub/four-meme-graduation-radar"
+    },
+    {
+      "id": "four-meme-tax-token-guard",
+      "name": "Four.Meme Tax Token Guard",
+      "description": "Plans TaxToken creation with fee-split sanity checks, anti-sniping defaults, explicit confirmation gates, and post-launch tax-info reconciliation.",
+      "category": "Ecosystem",
+      "version": "0.1.0",
+      "author": "skillshub-curation",
+      "mode": "guide",
+      "provenance": "curated",
+      "sourceAttribution": "four-meme-community/four-meme-ai tax options + Four.meme tax-token docs",
+      "sourceUrl": "https://four-meme.gitbook.io/four.meme/blog/product-update-new-tax-token-model-with-x-mode-on-four.meme",
+      "maintainedBy": "SkillsHub",
+      "inputExample": {
+        "action": "create_tax_token",
+        "symbol": "TAXA",
+        "taxFeeRate": 5,
+        "taxLiquidityRate": 100,
+        "taxRecipientRate": 0
+      },
+      "installCommand": "npx @skillshub/four-meme-tax-token-guard"
+    },
+    {
+      "id": "four-meme-mempool-sentinel",
+      "name": "Four.Meme Mempool Sentinel",
+      "description": "Builds real-time pending-transaction watchlists for Four.meme and upgrades alerts only after event-level confirmation, reducing false positives.",
+      "category": "Ecosystem",
+      "version": "0.1.0",
+      "author": "skillshub-curation",
+      "mode": "guide",
+      "provenance": "curated",
+      "sourceAttribution": "Bitquery Four Meme Mempool APIs + community MCP workflow references",
+      "sourceUrl": "https://docs.bitquery.io/docs/blockchain/BSC/four-meme-api/",
+      "maintainedBy": "SkillsHub",
+      "inputExample": {
+        "action": "watch_pending_flows",
+        "windowSeconds": 45,
+        "minBuyBnb": 0.3,
+        "trackWallets": [
+          "0x..."
+        ]
+      },
+      "installCommand": "npx @skillshub/four-meme-mempool-sentinel"
+    },
+    {
       "id": "erc8004-fast-auth",
       "name": "ERC8004 Fast Auth",
       "description": "Provides fast ERC-8004/ERC-721 operator authorization and revoke runbook for agent wallets with least-privilege controls.",
@@ -275,6 +338,24 @@
     }
   ],
   "openSourceCandidates": [
+    {
+      "name": "Four.Meme Graduation Radar",
+      "repo": "https://github.com/four-meme-community/four-meme-ai",
+      "sourceTag": "ecosystem",
+      "adaptation": "Combine Graduated rankings, listedPancake filters, and LiquidityAdded reconciliation for migration confidence scoring."
+    },
+    {
+      "name": "Four.Meme Tax Token Guard",
+      "repo": "https://four-meme.gitbook.io/four.meme/blog/product-update-new-tax-token-model-with-x-mode-on-four.meme",
+      "sourceTag": "ecosystem",
+      "adaptation": "TaxToken config validation, anti-sniping defaults, and post-launch tax-info verification workflow."
+    },
+    {
+      "name": "Four.Meme Mempool Sentinel",
+      "repo": "https://docs.bitquery.io/docs/blockchain/BSC/four-meme-api/",
+      "sourceTag": "ecosystem",
+      "adaptation": "Pending-transaction signal scoring with chain-event confirmation to reduce false positives."
+    },
     {
       "name": "BSC NFT Read Module",
       "sourceTag": "ecosystem",
