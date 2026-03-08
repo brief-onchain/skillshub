@@ -325,6 +325,28 @@
         "includeSignalDashboard": true
       },
       "installCommand": "npx @skillshub/kryptogo-cluster-radar"
+    },
+    {
+      "id": "syncx",
+      "name": "SyncX Multi-Platform Publisher",
+      "description": "Integrates the open-source SyncX workflow for one-command cross-posting to Binance Square and X/Twitter, with optional Telegram and Threads publishing.",
+      "category": "Ecosystem",
+      "version": "0.1.0",
+      "author": "SyncX2026",
+      "mode": "integration",
+      "provenance": "adapted",
+      "sourceAttribution": "SyncX2026/SyncX",
+      "sourceUrl": "https://github.com/SyncX2026/SyncX",
+      "maintainedBy": "SkillsHub",
+      "inputExample": {
+        "text": "BTC retrace then continuation; watch 4h structure.",
+        "platforms": [
+          "square",
+          "twitter"
+        ],
+        "twitterMode": "official"
+      },
+      "installCommand": "git clone https://github.com/SyncX2026/SyncX && cd SyncX/skills/syncx && python3 scripts/publish_sync.py --init-config"
     }
   ],
   "excludedDirections": [
