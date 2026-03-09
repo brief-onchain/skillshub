@@ -121,6 +121,25 @@ export default function SkillDetailPage({ params }: Props) {
                   )}
                 </div>
                 <div>
+                  <div className="text-text-sub/70 mb-1">{t.skillDetail.xProfile}</div>
+                  {skill.sourceXHandle ? (
+                    skill.sourceXUrl ? (
+                      <a
+                        href={skill.sourceXUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="font-mono text-gold hover:text-white transition-colors break-all"
+                      >
+                        {skill.sourceXHandle}
+                      </a>
+                    ) : (
+                      <div className="font-mono text-text-main">{skill.sourceXHandle}</div>
+                    )
+                  ) : (
+                    <div className="font-mono text-text-sub/60">-</div>
+                  )}
+                </div>
+                <div>
                   <div className="text-text-sub/70 mb-1">{t.skillDetail.license}</div>
                   <div className="font-mono text-text-main">
                     {skill.sourceLicense ||

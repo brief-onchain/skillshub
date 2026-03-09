@@ -102,6 +102,23 @@ export default function SkillsGrid() {
                   <span className="text-[11px] text-text-sub/60 font-mono uppercase">
                     {t.skills.source}: {skill.sourceAttribution || 'Community Open-Source'}
                   </span>
+                  {skill.sourceXHandle ? (
+                    <span className="text-[11px] text-text-sub/50 font-mono uppercase">
+                      {t.skills.xProfile}:{' '}
+                      {skill.sourceXUrl ? (
+                        <a
+                          href={skill.sourceXUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-gold hover:text-white transition-colors"
+                        >
+                          {skill.sourceXHandle}
+                        </a>
+                      ) : (
+                        skill.sourceXHandle
+                      )}
+                    </span>
+                  ) : null}
                   <span className="text-[11px] text-text-sub/50 font-mono uppercase">
                     {t.skills.maintainedBy}: {skill.maintainedBy || 'SkillsHub'}
                   </span>

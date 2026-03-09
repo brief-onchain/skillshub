@@ -24,6 +24,8 @@ const i18n = {
     ossTitle: 'Open Source Intake',
     ossTag: 'github curated',
     runInPlayground: 'Run in Playground',
+    source: 'Source',
+    xProfile: 'X',
     adaptation: 'Adaptation',
     langSwitch: '中文',
   },
@@ -52,6 +54,8 @@ const i18n = {
     ossTitle: '开源项目引入',
     ossTag: 'GitHub 精选',
     runInPlayground: '在试验场中运行',
+    source: '来源',
+    xProfile: 'X',
     adaptation: '适配方案',
     langSwitch: 'EN',
   }
@@ -180,6 +184,24 @@ function renderSkills() {
         <h3>${s.name}</h3>
         <div>${s.summary}</div>
         <div class="muted">${s.overlapPolicy}</div>
+        ${
+          s.sourceAttribution
+            ? `<div class="muted">${t.source}: ${
+                s.sourceUrl
+                  ? `<a href="${s.sourceUrl}" target="_blank" rel="noreferrer">${s.sourceAttribution}</a>`
+                  : s.sourceAttribution
+              }</div>`
+            : ''
+        }
+        ${
+          s.sourceXHandle
+            ? `<div class="muted">${t.xProfile}: ${
+                s.sourceXUrl
+                  ? `<a href="${s.sourceXUrl}" target="_blank" rel="noreferrer">${s.sourceXHandle}</a>`
+                  : s.sourceXHandle
+              }</div>`
+            : ''
+        }
         <code>${s.install?.command || ''}</code>
         <button class="btn ghost" data-skill-id="${s.id}">${t.runInPlayground}</button>
       </article>

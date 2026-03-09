@@ -9,6 +9,8 @@ export interface Skill {
   provenance?: 'original' | 'curated' | 'adapted';
   sourceAttribution?: string;
   sourceUrl?: string;
+  sourceXHandle?: string;
+  sourceXUrl?: string;
   sourceLicense?: string;
   maintainedBy?: string;
   inputExample?: Record<string, unknown>;

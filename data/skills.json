@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-03-03",
+  "generatedAt": "2026-03-09",
   "brand": "BSC Skiller Brain",
   "exclusions": {
     "source": "https://clawhub.ai/skills?sort=downloads&q=bsc",
@@ -234,6 +234,32 @@
       },
       "install": {
         "command": "Read SKILL.md: skills/lib-3-ecosystem-intake/skills/erc8004-fast-auth/SKILL.md",
+        "status": "guide"
+      }
+    },
+    {
+      "id": "committee-prediction-market",
+      "name": "Committee Prediction Market",
+      "track": "ecosystem-intake",
+      "category": "Prediction Governance",
+      "summary": "Committee-based BSC prediction market playbook for proposal creation, committee voting, dispute arbitration, governance rewards, and YES/NO CPMM trading.",
+      "overlapPolicy": "Guide mode only; read condition status first; no unattended stake, vote, dispute, or trade execution.",
+      "provenance": "adapted",
+      "author": "frank",
+      "sourceAttribution": "gougoubi-ai/committee-prediction-market-skills",
+      "sourceUrl": "https://github.com/gougoubi-ai/committee-prediction-market-skills/blob/main/SKILLS.md",
+      "sourceXHandle": "@gougoubi_ai",
+      "sourceXUrl": "https://x.com/gougoubi_ai",
+      "inputExample": {
+        "action": "create_proposal",
+        "proposalName": "BTC closes above 120000 USDT on 2026-06-30",
+        "deadline": 1782777600,
+        "liquidityToken": "0x...",
+        "proposalSkills": "Use Binance BTCUSDT daily close; settle in Beijing time; fetch final close before committee settlement vote.",
+        "stakeAmountDoge": 10
+      },
+      "install": {
+        "command": "Read SKILL.md: skills/lib-3-ecosystem-intake/skills/committee-prediction-market/SKILL.md",
         "status": "guide"
       }
     }

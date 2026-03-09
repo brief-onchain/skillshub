@@ -300,6 +300,30 @@
       "installCommand": "npx @skillshub/prediction-market-clob"
     },
     {
+      "id": "committee-prediction-market",
+      "name": "Committee Prediction Market",
+      "description": "Adapts GouGouBi's committee-based prediction market skill for BSC proposal creation, committee workflows, dispute arbitration, governance rewards, and YES/NO CPMM trading.",
+      "category": "Ecosystem",
+      "version": "0.1.0",
+      "author": "frank",
+      "mode": "guide",
+      "provenance": "adapted",
+      "sourceAttribution": "gougoubi-ai/committee-prediction-market-skills",
+      "sourceUrl": "https://github.com/gougoubi-ai/committee-prediction-market-skills/blob/main/SKILLS.md",
+      "sourceXHandle": "@gougoubi_ai",
+      "sourceXUrl": "https://x.com/gougoubi_ai",
+      "maintainedBy": "SkillsHub",
+      "inputExample": {
+        "action": "create_proposal",
+        "proposalName": "BTC closes above 120000 USDT on 2026-06-30",
+        "deadline": 1782777600,
+        "liquidityToken": "0x...",
+        "proposalSkills": "Use Binance BTCUSDT daily close; settle in Beijing time; fetch final close before committee settlement vote.",
+        "stakeAmountDoge": 10
+      },
+      "installCommand": "Read SKILL.md: skills/lib-3-ecosystem-intake/skills/committee-prediction-market/SKILL.md"
+    },
+    {
       "id": "kryptogo-cluster-radar",
       "name": "KryptoGO Cluster Radar (Read-Only)",
       "description": "Adapts KryptoGO's cluster/whale/smart-money analysis workflow for BSC-focused token intelligence; this integration only includes analysis modules.",
