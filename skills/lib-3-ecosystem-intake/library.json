@@ -169,6 +169,78 @@
       "installCommand": "npx @skillshub/four-meme-mempool-sentinel"
     },
     {
+      "id": "four-meme-bitquery-query-kit",
+      "name": "Four.Meme Bitquery Query Kit",
+      "description": "Provides a query-first analytics toolkit for Four.meme using Bitquery GraphQL/streams (trades, bonding progress, migrations, liquidity, and trader behavior).",
+      "category": "Ecosystem",
+      "version": "0.1.0",
+      "author": "skillshub-curation",
+      "mode": "guide",
+      "provenance": "adapted",
+      "sourceAttribution": "bitquery/four-meme-api",
+      "sourceUrl": "https://github.com/bitquery/four-meme-api",
+      "maintainedBy": "SkillsHub",
+      "inputExample": {
+        "action": "token_analytics_snapshot",
+        "tokenAddress": "0x...",
+        "include": [
+          "ohlcv",
+          "bonding_curve",
+          "top_traders",
+          "liquidity"
+        ]
+      },
+      "installCommand": "npx @skillshub/four-meme-bitquery-query-kit"
+    },
+    {
+      "id": "four-meme-mcp-ops-guard",
+      "name": "Four.Meme MCP Ops Guard",
+      "description": "Hardens Four.meme MCP-server operations with read-only defaults, explicit trade confirmations, and secret-isolation policies.",
+      "category": "Ecosystem",
+      "version": "0.1.0",
+      "author": "skillshub-curation",
+      "mode": "guide",
+      "provenance": "adapted",
+      "sourceAttribution": "sunneeee/fourtrader-mcp",
+      "sourceUrl": "https://github.com/sunneeee/fourtrader-mcp",
+      "maintainedBy": "SkillsHub",
+      "inputExample": {
+        "action": "setup_mcp_guarded_mode",
+        "mode": "read_only",
+        "tradeConfirmation": "required",
+        "providers": [
+          "fourmeme",
+          "bitquery"
+        ]
+      },
+      "installCommand": "npx @skillshub/four-meme-mcp-ops-guard"
+    },
+    {
+      "id": "finclaw-meme-monitor-playbook",
+      "name": "FinClaw Meme Monitor Playbook",
+      "description": "Adapts FinClaw's social-signal and market-analysis flow into a Four.meme candidate discovery and manual-launch decision playbook.",
+      "category": "Ecosystem",
+      "version": "0.1.0",
+      "author": "skillshub-curation",
+      "mode": "guide",
+      "provenance": "adapted",
+      "sourceAttribution": "Fin-Chelae/FinClaw",
+      "sourceUrl": "https://github.com/Fin-Chelae/FinClaw",
+      "sourceLicense": "MIT",
+      "maintainedBy": "SkillsHub",
+      "inputExample": {
+        "action": "daily_meme_scan",
+        "channels": [
+          "x",
+          "rss"
+        ],
+        "chain": "bsc",
+        "launchVenue": "four.meme",
+        "autoExecute": false
+      },
+      "installCommand": "npx @skillshub/finclaw-meme-monitor-playbook"
+    },
+    {
       "id": "erc8004-fast-auth",
       "name": "ERC8004 Fast Auth",
       "description": "Provides fast ERC-8004/ERC-721 operator authorization and revoke runbook for agent wallets with least-privilege controls.",
@@ -381,6 +453,10 @@
     {
       "slug": "unscoped-private-key-injection",
       "note": "No plaintext private-key handling inside generated examples or outputs."
+    },
+    {
+      "slug": "mev-sandwich-execution",
+      "note": "MEV sandwich-bot style execution (for example fuzzland/fourmeme-god) is excluded from this library's default support scope."
     }
   ],
   "openSourceCandidates": [
@@ -401,6 +477,24 @@
       "repo": "https://docs.bitquery.io/docs/blockchain/BSC/four-meme-api/",
       "sourceTag": "ecosystem",
       "adaptation": "Pending-transaction signal scoring with chain-event confirmation to reduce false positives."
+    },
+    {
+      "name": "Four.Meme Bitquery Query Kit",
+      "repo": "https://github.com/bitquery/four-meme-api",
+      "sourceTag": "ecosystem",
+      "adaptation": "Reusable GraphQL query packs for trades, bonding-curve progress, migrations, and trader profiling."
+    },
+    {
+      "name": "Four.Meme MCP Ops Guard",
+      "repo": "https://github.com/sunneeee/fourtrader-mcp",
+      "sourceTag": "ecosystem",
+      "adaptation": "MCP deployment hardening with read-only defaults, explicit trade confirmation, and key isolation."
+    },
+    {
+      "name": "FinClaw Meme Monitor Playbook",
+      "repo": "https://github.com/Fin-Chelae/FinClaw",
+      "sourceTag": "ecosystem",
+      "adaptation": "Social-signal scanning and scoring workflow adapted to manual Four.meme launch decisions."
     },
     {
       "name": "BSC NFT Read Module",
