@@ -1,25 +1,8 @@
 import type { Metadata } from "next";
-import { Orbitron, Noto_Sans_SC, JetBrains_Mono } from "next/font/google";
+import AppProviders from "@/components/AppProviders";
 import { LanguageProvider } from "@/lib/i18n";
+import { getNfaPublicConfig } from "@/lib/server/nfa";
 import "./globals.css";
-
-const orbitron = Orbitron({
-  subsets: ["latin"],
-  variable: "--font-orbitron",
-  display: "swap",
-});
-
-const notoSans = Noto_Sans_SC({
-  subsets: ["latin"],
-  variable: "--font-noto",
-  display: "swap",
-});
-
-const jetbrains = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-jetbrains",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "SkillsHub | BSC On-Chain Intelligence Platform",
@@ -35,10 +18,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const nfaConfig = getNfaPublicConfig();
+
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={`${orbitron.variable} ${notoSans.variable} ${jetbrains.variable} bg-bg text-text-main font-body antialiased selection:bg-gold selection:text-bg`}>
-        <LanguageProvider>{children}</LanguageProvider>
+      <body className="bg-bg text-text-main font-body antialiased selection:bg-gold selection:text-bg">
+        <LanguageProvider>
+          <AppProviders nfaConfig={nfaConfig}>{children}</AppProviders>
+        </LanguageProvider>
       </body>
     </html>
   );

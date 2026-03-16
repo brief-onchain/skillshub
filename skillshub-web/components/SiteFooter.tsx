@@ -17,14 +17,18 @@ export default function SiteFooter() {
         <div className="flex flex-col gap-2 text-text-sub/80 md:items-end">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-gold">CA:</span>
-            <a
-              href={SITE.bscscanAddressUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-gold transition-colors break-all"
-            >
-              {SITE.contractAddress}
-            </a>
+            {SITE.contractAddress ? (
+              <a
+                href={SITE.bscscanAddressUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-gold transition-colors break-all"
+              >
+                {SITE.contractAddress}
+              </a>
+            ) : (
+              <span className="text-text-sub/50">Pending Genesis NFA deployment</span>
+            )}
           </div>
           <div className="flex items-center gap-3">
             <Link href="/roadmap" className="hover:text-gold transition-colors">
@@ -44,4 +48,3 @@ export default function SiteFooter() {
     </footer>
   );
 }
-

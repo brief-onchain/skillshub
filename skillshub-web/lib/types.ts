@@ -47,6 +47,56 @@ export interface HealthResponse {
   warning?: string | null;
 }
 
+export interface NfaChatRequest {
+  tokenId: number;
+  walletAddress: string;
+  signature: string;
+  authMessage: string;
+  message: string;
+  skillId?: string;
+  skillInput?: Record<string, any>;
+  history?: Array<{
+    role: 'user' | 'assistant';
+    content: string;
+  }>;
+}
+
+export interface NfaChatResponse {
+  success: boolean;
+  reply?: string;
+  model?: string;
+  error?: string;
+  skillResult?: PlaygroundResponse | null;
+  toolResults?: Record<string, unknown>;
+}
+
+export interface NfaAgentProfile {
+  tokenId: number;
+  owner: string;
+  identity: {
+    roleId: number;
+    traitSeed: string;
+    mintedAt: string;
+  };
+  state: {
+    active: boolean;
+    logicAddress: string;
+    createdAt: string;
+  };
+  persona: {
+    role: string;
+    style: string;
+    expertise: string;
+    traitSet: {
+      tone: string;
+      verbosity: string;
+      catchphrase: string;
+      emojiLevel: string;
+    };
+    systemPrompt: string;
+  };
+}
+
 export interface ExcludedDirection {
   slug: string;
   note: string;

@@ -1,7 +1,7 @@
 export const SITE = {
-  contractAddress: '0x9de129f9a57009b898db561177d09089efe0ffff',
+  contractAddress: process.env.NEXT_PUBLIC_NFA_CONTRACT_ADDRESS || '',
   twitterUrl: 'https://x.com/errodenos133734',
-  bscscanAddressUrl:
-    'https://bscscan.com/address/0x9de129f9a57009b898db561177d09089efe0ffff'
+  bscscanAddressUrl: process.env.NEXT_PUBLIC_NFA_CONTRACT_ADDRESS
+    ? `https://bscscan.com/address/${process.env.NEXT_PUBLIC_NFA_CONTRACT_ADDRESS}`
+    : 'https://bscscan.com'
 } as const;
-

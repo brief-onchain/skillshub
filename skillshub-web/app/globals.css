@@ -6,6 +6,9 @@
   --foreground-rgb: 246, 236, 218;
   --background-start-rgb: 9, 8, 7;
   --background-end-rgb: 9, 8, 7;
+  --font-orbitron: "Avenir Next Condensed", "Helvetica Neue", sans-serif;
+  --font-noto: "Hiragino Sans GB", "PingFang SC", "Helvetica Neue", sans-serif;
+  --font-jetbrains: "SF Mono", "Menlo", "Monaco", monospace;
 }
 
 body {

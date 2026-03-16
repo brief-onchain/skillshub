@@ -45,10 +45,13 @@ const phases = [
     title: 'Scale, Governance And On-Chain Coordination',
     goals: [
       'Evolve from single-product execution to protocol-grade coordination layer.',
+      'Separate Genesis-era equal-share incentives from future Fusion-era weighted rewards.',
       'Introduce transparent roadmap governance and milestone accountability.',
       'Strengthen observability, anomaly detection, and safe rollout practices.'
     ],
     deliverables: [
+      'Fusion-ready NFA expansion plan: Genesis keeps equal-share claim logic, while future fused assets move to a separate weighted dividend contract.',
+      'Separate Fusion art and metadata system so future fused NFA visuals do not reuse Genesis layers or naming.',
       'Versioned skill governance model and deprecation policy.',
       'Operational dashboards for reliability, cost, and security posture.',
       'Roadmap review cadence with quarterly public milestone updates.'
@@ -119,15 +122,21 @@ export default function RoadmapPage() {
           <div className="mt-8 p-4 md:p-5 rounded-xl border border-gold/30 bg-gold/5">
             <div className="text-xs font-mono text-gold uppercase tracking-wider mb-2">On-Chain Identity</div>
             <div className="text-sm md:text-base break-all">
-              CA:{' '}
-              <a
-                href={SITE.bscscanAddressUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="text-gold hover:text-text-main transition-colors"
-              >
-                {SITE.contractAddress}
-              </a>
+              {SITE.contractAddress ? (
+                <>
+                  CA:{' '}
+                  <a
+                    href={SITE.bscscanAddressUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-gold hover:text-text-main transition-colors"
+                  >
+                    {SITE.contractAddress}
+                  </a>
+                </>
+              ) : (
+                'Genesis NFA contract pending deployment'
+              )}
             </div>
           </div>
         </div>
@@ -180,4 +189,3 @@ export default function RoadmapPage() {
     </main>
   );
 }
-

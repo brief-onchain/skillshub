@@ -3,7 +3,10 @@ import {
   Skill,
   PlaygroundRequest,
   PlaygroundResponse,
-  HealthResponse
+  HealthResponse,
+  NfaChatRequest,
+  NfaChatResponse,
+  NfaAgentProfile
 } from './types';
 
 const DEFAULT_API_BASE = process.env.NEXT_PUBLIC_DEFAULT_API_BASE || '';
@@ -79,5 +82,23 @@ export class ApiClient {
         error: 'Playground API unavailable'
       };
     }
+  }
+
+  static async runNfaChat(data: NfaChatRequest): Promise<NfaChatResponse> {
+    try {
+      return await this.fetch<NfaChatResponse>('/api/nfa/chat', {
+        method: 'POST',
+        body: JSON.stringify(data)
+      });
+    } catch {
+      return {
+        success: false,
+        error: 'NFA chat API unavailable'
+      };
+    }
+  }
+
+  static async getNfaAgent(tokenId: number): Promise<NfaAgentProfile> {
+    return await this.fetch<NfaAgentProfile>(`/api/nfa/agent/${tokenId}`);
   }
 }

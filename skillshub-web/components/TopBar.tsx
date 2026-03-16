@@ -36,6 +36,7 @@ export default function TopBar() {
             { href: '#skills', label: t.topbar.navSkills },
             { href: '#playground', label: t.topbar.navPlayground },
             { href: '#oss', label: t.topbar.navOss },
+            { href: '/nfa', label: 'Genesis NFA' },
             { href: '/roadmap', label: t.topbar.navRoadmap },
           ].map((item) => (
             <Link
