@@ -26,11 +26,16 @@ id_ed25519.pub
 dist/
 build/
 coverage/
+/out/
+/cache/
+/broadcast/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+*.abi
+*.bin
 
 ## OS / editor
 .DS_Store
@@ -50,3 +55,18 @@ skillshub-web/tsconfig.tsbuildinfo
 
 docs/
 assets/
+prd/
+
+## NFA art pipeline (local-only, not open-sourced)
+nfa-art/
+scripts/nfa/
+
+## Contracts (not open-sourced yet)
+contract/
+script/
+test/
+foundry.toml
+remappings.txt
+
+owner_private_key
+dev_private_key

@@ -11,5 +11,10 @@
   "entryIp": "138.226.240.77",
   "sslCertName": "skillerhub.net",
   "manualSshDeploy": false,
-  "updatedAt": "2026-03-03T13:29:00Z"
+  "deployNotes": [
+    "Remote npm registry access is intermittently unstable on genkiai-new. Do not delete node_modules during routine deploys.",
+    "If package.json and package-lock.json are unchanged, prefer git pull plus npm run build plus pm2 restart.",
+    "Only run npm install or npm ci when dependencies actually changed, and avoid doing that on the live app directory unless necessary."
+  ],
+  "updatedAt": "2026-03-17T00:00:00Z"
 }

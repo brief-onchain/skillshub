@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
-import { encodeFunctionData, parseAbi } from 'viem';
+import { encodeFunctionData } from 'viem';
+import { skillNfaDividendV2Abi } from '@/lib/nfa-dividend-contract';
 import { getSkillById } from '@/lib/server/catalog';
+import { getDividendPendingSummary } from '@/lib/server/nfa-dividend-v2';
 import { ensureFlapEnvLoaded } from '@/lib/server/env';
 import { callLlmChat } from '@/lib/server/llm';
 import {
@@ -8,7 +10,6 @@ import {
   getAgentIdentity,
   getAgentState,
   getNfaBalance,
-  getPendingDividend,
   verifyWalletSignature
 } from '@/lib/server/nfa-chain';
 import { getNfaPublicConfig } from '@/lib/server/nfa';
@@ -17,7 +18,6 @@ import { runPlaygroundLocal } from '@/lib/server/runtime';
 import type { NfaChatRequest, PlaygroundResponse } from '@/lib/types';
 
 export const runtime = 'nodejs';
-const dividendAbi = parseAbi(['function claimDividend()']);
 
 function truncateJson(value: unknown, maxLength = 2_500) {
   const raw = JSON.stringify(value, null, 2);
@@ -101,6 +101,7 @@ export async function POST(req: Request) {
   const persona = buildNfaPersona(identity.roleId, identity.traitSeed);
   let skillResult: PlaygroundResponse | null = null;
   let skillContext = 'No extra skill execution attached.';
+  let dividendSummary: Awaited<ReturnType<typeof getDividendPendingSummary>> | null = null;
 
   if (payload.skillId) {
     const skill = getSkillById(payload.skillId);
@@ -148,10 +149,15 @@ export async function POST(req: Request) {
   if (intents.wantsDividend || intents.wantsClaim) {
     if (nfaConfig.dividendContractAddress) {
       try {
-        const pendingDividend = await getPendingDividend(walletAddress as `0x${string}`);
+        dividendSummary = await getDividendPendingSummary(walletAddress as `0x${string}`);
         toolResults.dividend = {
           contractAddress: nfaConfig.dividendContractAddress,
-          pending: pendingDividend.toString()
+          contractVersion: dividendSummary.contractVersion,
+          pending: dividendSummary.pendingWei,
+          pendingBnb: dividendSummary.pendingBnb,
+          claimableRounds: dividendSummary.claimableRounds,
+          currentQualification: dividendSummary.currentQualification,
+          warnings: dividendSummary.warnings
         };
       } catch (error) {
         toolResults.dividend = {
@@ -168,14 +174,40 @@ export async function POST(req: Request) {
 
   if (intents.wantsClaim) {
     if (nfaConfig.dividendContractAddress) {
-      toolResults.claimTx = {
-        to: nfaConfig.dividendContractAddress,
-        data: encodeFunctionData({
-          abi: dividendAbi,
-          functionName: 'claimDividend'
-        }),
-        value: '0'
-      };
+      try {
+        if (!dividendSummary) {
+          dividendSummary = await getDividendPendingSummary(walletAddress as `0x${string}`);
+        }
+        const hasClaimableRounds =
+          dividendSummary.contractVersion === 'v2' && dividendSummary.claimPayload.roundIds.length > 0;
+
+        toolResults.claimTx = hasClaimableRounds
+          ? {
+              to: nfaConfig.dividendContractAddress,
+              data: encodeFunctionData({
+                abi: skillNfaDividendV2Abi,
+                functionName: 'claimMany',
+                args: [
+                  dividendSummary.claimPayload.roundIds.map((value) => BigInt(value)),
+                  dividendSummary.claimPayload.eligibleShares.map((value) => BigInt(value)),
+                  dividendSummary.claimPayload.amounts.map((value) => BigInt(value)),
+                  dividendSummary.claimPayload.proofs
+                ]
+              }),
+              value: '0'
+            }
+          : dividendSummary.contractVersion !== 'v2'
+            ? {
+                info: 'Dividend contract is still legacy on-chain. Switch Genesis to Dividend V2 before claiming through snapshot rounds.'
+              }
+          : {
+              info: 'No claimable dividend rounds found for this wallet right now'
+            };
+      } catch (error) {
+        toolResults.claimTx = {
+          error: error instanceof Error ? error.message : 'failed to build dividend claim transaction'
+        };
+      }
     } else {
       toolResults.claimTx = {
         error: 'dividend contract address is not configured'

@@ -1,35 +1,46 @@
 'use client';
 
-import { useEffect } from 'react';
-import { erc20Abi, formatEther, formatUnits } from 'viem';
-import { useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
+import { useEffect, useState } from 'react';
+import { formatUnits } from 'viem';
+import { useAccount, useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
+import { skillNfaDividendV2Abi } from '@/lib/nfa-dividend-contract';
 import type { NfaPublicConfig } from '@/lib/nfa';
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000' as const;
-const ZERO_BIGINT = BigInt(0);
-const dividendAbi = [
-  {
-    type: 'function',
-    stateMutability: 'view',
-    name: 'pendingDividend',
-    inputs: [{ name: 'account', type: 'address' }],
-    outputs: [{ name: '', type: 'uint256' }]
-  },
-  {
-    type: 'function',
-    stateMutability: 'nonpayable',
-    name: 'claimDividend',
-    inputs: [],
-    outputs: [{ name: 'amount', type: 'uint256' }]
-  },
-  {
-    type: 'function',
-    stateMutability: 'view',
-    name: 'rewardToken',
-    inputs: [],
-    outputs: [{ name: '', type: 'address' }]
-  }
-] as const;
+
+type PendingRound = {
+  roundId: number;
+  amountWei: string;
+  amountBnb: string;
+  eligibleShares: string;
+  claimed: boolean;
+  createdAt: string;
+  snapshotBlock: string;
+  proof: `0x${string}`[];
+};
+
+type PendingSummary = {
+  contractAddress: `0x${string}`;
+  contractVersion: 'legacy' | 'v2';
+  pendingWei: string;
+  pendingBnb: string;
+  claimableRounds: number;
+  currentQualification: {
+    walletAddress: `0x${string}`;
+    nfaBalance: string;
+    skillBalance: string;
+    skillQualifiedShares: string;
+    eligibleShares: string;
+  };
+  rounds: PendingRound[];
+  claimPayload: {
+    roundIds: number[];
+    eligibleShares: string[];
+    amounts: string[];
+    proofs: `0x${string}`[][];
+  };
+  warnings: string[];
+};
 
 function shortAddress(value: string) {
   return `${value.slice(0, 6)}...${value.slice(-4)}`;
@@ -39,71 +50,15 @@ export default function NfaDividendPanel({ config }: { config: NfaPublicConfig }
   const { address, isConnected } = useAccount();
   const dividendContractAddress = (config.dividendContractAddress || ZERO_ADDRESS) as `0x${string}`;
   const hasDividendContract = dividendContractAddress !== ZERO_ADDRESS;
-
-  const pendingQuery = useReadContract({
-    abi: dividendAbi,
-    address: dividendContractAddress,
-    functionName: 'pendingDividend',
-    args: [address || ZERO_ADDRESS],
-    query: {
-      enabled: hasDividendContract && Boolean(address),
-      refetchInterval: 10_000
-    }
-  });
-  const rewardTokenQuery = useReadContract({
-    abi: dividendAbi,
-    address: dividendContractAddress,
-    functionName: 'rewardToken',
-    query: {
-      enabled: hasDividendContract,
-      refetchInterval: 60_000
-    }
-  });
-
-  const rewardTokenAddress =
-    typeof rewardTokenQuery.data === 'string' ? rewardTokenQuery.data : ZERO_ADDRESS;
-  const isNativeReward = rewardTokenAddress === ZERO_ADDRESS;
-
-  const tokenAddress = (rewardTokenAddress || ZERO_ADDRESS) as `0x${string}`;
-  const tokenSymbolQuery = useReadContract({
-    abi: erc20Abi,
-    address: tokenAddress,
-    functionName: 'symbol',
-    query: {
-      enabled: hasDividendContract && !isNativeReward
-    }
-  });
-  const tokenDecimalsQuery = useReadContract({
-    abi: erc20Abi,
-    address: tokenAddress,
-    functionName: 'decimals',
-    query: {
-      enabled: hasDividendContract && !isNativeReward
-    }
-  });
-
-  const pendingAmount = typeof pendingQuery.data === 'bigint' ? pendingQuery.data : ZERO_BIGINT;
-  const rewardSymbol =
-    isNativeReward
-      ? 'BNB'
-      : typeof tokenSymbolQuery.data === 'string' && tokenSymbolQuery.data
-        ? tokenSymbolQuery.data
-        : 'TOKEN';
-  const rewardDecimals =
-    isNativeReward
-      ? 18
-      : typeof tokenDecimalsQuery.data === 'number'
-        ? tokenDecimalsQuery.data
-        : 18;
-  const pendingDisplay = isNativeReward
-    ? formatEther(pendingAmount)
-    : formatUnits(pendingAmount, rewardDecimals);
-
+  const [summary, setSummary] = useState<PendingSummary | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadError, setLoadError] = useState('');
   const {
     writeContract,
     data: txHash,
     error: writeError,
-    isPending: writePending
+    isPending: writePending,
+    reset: resetWrite
   } = useWriteContract();
   const receiptQuery = useWaitForTransactionReceipt({
     hash: txHash,
@@ -113,22 +68,76 @@ export default function NfaDividendPanel({ config }: { config: NfaPublicConfig }
   });
 
   useEffect(() => {
+    let cancelled = false;
+
+    async function loadSummary() {
+      if (!hasDividendContract || !address) {
+        setSummary(null);
+        setLoadError('');
+        return;
+      }
+
+      setIsLoading(true);
+      setLoadError('');
+
+      try {
+        const response = await fetch(`/api/nfa/dividend/pending?wallet=${address}`, {
+          cache: 'no-store'
+        });
+        const payload = await response.json();
+
+        if (cancelled) {
+          return;
+        }
+
+        if (!response.ok || !payload?.success) {
+          throw new Error(payload?.error || 'Failed to load dividend summary');
+        }
+
+        setSummary(payload as PendingSummary);
+      } catch (error) {
+        if (!cancelled) {
+          setSummary(null);
+          setLoadError(error instanceof Error ? error.message : 'Failed to load dividend summary');
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    void loadSummary();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [address, hasDividendContract, txHash]);
+
+  useEffect(() => {
     if (!receiptQuery.isSuccess) {
       return;
     }
 
-    pendingQuery.refetch();
-  }, [pendingQuery, receiptQuery.isSuccess]);
+    resetWrite();
+  }, [receiptQuery.isSuccess, resetWrite]);
 
+  const unclaimedRounds = summary?.rounds.filter((round) => !round.claimed) || [];
   const handleClaim = () => {
-    if (!hasDividendContract || !address) {
+    if (!summary || !hasDividendContract || !address || unclaimedRounds.length === 0) {
       return;
     }
 
     writeContract({
-      abi: dividendAbi,
+      abi: skillNfaDividendV2Abi,
       address: dividendContractAddress,
-      functionName: 'claimDividend'
+      functionName: 'claimMany',
+      args: [
+        summary.claimPayload.roundIds.map((value) => BigInt(value)),
+        summary.claimPayload.eligibleShares.map((value) => BigInt(value)),
+        summary.claimPayload.amounts.map((value) => BigInt(value)),
+        summary.claimPayload.proofs
+      ]
     });
   };
 
@@ -136,9 +145,14 @@ export default function NfaDividendPanel({ config }: { config: NfaPublicConfig }
     ? 'Submitting Claim...'
     : receiptQuery.isLoading
       ? 'Waiting For Confirmation...'
-      : 'Claim Dividend';
+      : unclaimedRounds.length > 1
+        ? `Claim ${unclaimedRounds.length} Rounds`
+        : 'Claim Dividend';
 
-  const surfaceError = writeError?.message || receiptQuery.error?.message || '';
+  const skillBalanceDisplay = summary
+    ? formatUnits(BigInt(summary.currentQualification.skillBalance), config.paymentTokenDecimals || 18)
+    : '0';
+  const surfaceError = loadError || writeError?.message || receiptQuery.error?.message || '';
 
   return (
     <div className="rounded-[28px] border border-gold/20 bg-panel/70 p-6">
@@ -148,24 +162,24 @@ export default function NfaDividendPanel({ config }: { config: NfaPublicConfig }
             Holder Dividend
           </div>
           <h2 className="mt-3 text-2xl font-heading font-bold text-text-main">
-            Standalone claim lane
+            Snapshot claim lane
           </h2>
         </div>
         <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.25em] text-text-sub">
-          Claim-based
+          100k SKILL / share
         </span>
       </div>
 
       <div className="mt-6 grid gap-3 sm:grid-cols-2">
         <div className="rounded-2xl border border-white/8 bg-bg/70 p-4">
           <div className="text-[11px] font-mono uppercase tracking-[0.25em] text-text-sub/60">
-            Pending
+            Pending BNB
           </div>
           <div className="mt-2 text-2xl font-heading font-bold text-text-main">
-            {hasDividendContract && isConnected ? pendingDisplay : '0'}
+            {hasDividendContract && isConnected && summary ? summary.pendingBnb : '0'}
           </div>
           <div className="mt-1 text-xs text-text-sub/70">
-            Asset: {rewardSymbol}
+            Claimable rounds: {summary?.claimableRounds || 0}
           </div>
         </div>
 
@@ -174,19 +188,85 @@ export default function NfaDividendPanel({ config }: { config: NfaPublicConfig }
             Dividend Contract
           </div>
           <div className="mt-2 text-sm font-mono text-gold">
-            {hasDividendContract ? shortAddress(dividendContractAddress) : 'Not configured'}
+            {hasDividendContract
+              ? summary?.contractVersion === 'legacy'
+                ? `${shortAddress(dividendContractAddress)} · Legacy`
+                : shortAddress(dividendContractAddress)
+              : 'Not configured'}
           </div>
           <div className="mt-1 text-xs text-text-sub/70">
-            Users claim manually. No auto-push payout.
+            Each round snapshots NFA + SKILL balances before funds become claimable.
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-6 grid gap-3 sm:grid-cols-3">
+        <div className="rounded-2xl border border-white/8 bg-bg/70 p-4">
+          <div className="text-[11px] font-mono uppercase tracking-[0.25em] text-text-sub/60">
+            Current NFA
+          </div>
+          <div className="mt-2 text-xl font-heading font-bold text-text-main">
+            {summary?.currentQualification.nfaBalance || '0'}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-white/8 bg-bg/70 p-4">
+          <div className="text-[11px] font-mono uppercase tracking-[0.25em] text-text-sub/60">
+            Current {config.paymentTokenSymbol}
+          </div>
+          <div className="mt-2 text-xl font-heading font-bold text-text-main">
+            {summary ? skillBalanceDisplay : '0'}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-white/8 bg-bg/70 p-4">
+          <div className="text-[11px] font-mono uppercase tracking-[0.25em] text-text-sub/60">
+            Qualified Shares Now
+          </div>
+          <div className="mt-2 text-xl font-heading font-bold text-text-main">
+            {summary?.currentQualification.eligibleShares || '0'}
+          </div>
+          <div className="mt-1 text-xs text-text-sub/70">
+            `min(NFA, floor(SKILL / 100k))`
           </div>
         </div>
       </div>
 
       <div className="mt-6 text-sm leading-7 text-text-sub">
-        This panel is separate from chat because holders will expect a direct claim button. The
-        copilot can still explain pending balance and claim flow, but the actual claim stays as a
-        normal wallet transaction.
+        Dividend is no longer a single rolling balance formula. Each cron run creates a frozen
+        snapshot round. If a wallet is short on {config.paymentTokenSymbol} when the round is
+        created, the missing shares are gone for that round and cannot be recovered later.
       </div>
+
+      {summary?.rounds.length ? (
+        <div className="mt-6 rounded-2xl border border-white/8 bg-white/[0.02] p-4">
+          <div className="text-[11px] font-mono uppercase tracking-[0.25em] text-gold/80">
+            Latest Snapshot Rounds
+          </div>
+          <div className="mt-3 grid gap-3">
+            {summary.rounds
+              .slice()
+              .sort((left, right) => right.roundId - left.roundId)
+              .slice(0, 4)
+              .map((round) => (
+                <div
+                  key={round.roundId}
+                  className="rounded-2xl border border-white/8 bg-bg/70 p-4 text-sm text-text-sub"
+                >
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="font-heading text-text-main">Round #{round.roundId}</div>
+                    <div className="text-xs font-mono uppercase tracking-[0.18em] text-gold/70">
+                      {round.claimed ? 'Claimed' : 'Claimable'}
+                    </div>
+                  </div>
+                  <div className="mt-2">
+                    {round.amountBnb} BNB · {round.eligibleShares} shares · block {round.snapshotBlock}
+                  </div>
+                </div>
+              ))}
+          </div>
+        </div>
+      ) : null}
 
       <div className="mt-6 flex flex-col gap-3">
         <button
@@ -195,14 +275,31 @@ export default function NfaDividendPanel({ config }: { config: NfaPublicConfig }
           disabled={
             !hasDividendContract ||
             !isConnected ||
-            pendingAmount <= ZERO_BIGINT ||
+            !summary ||
+            unclaimedRounds.length === 0 ||
             writePending ||
-            receiptQuery.isLoading
+            receiptQuery.isLoading ||
+            isLoading
           }
           className="rounded-2xl bg-gold px-5 py-3 text-sm font-heading font-bold text-bg transition-colors hover:bg-gold-dark disabled:cursor-not-allowed disabled:opacity-60"
         >
           {actionLabel}
         </button>
+
+        {isLoading ? (
+          <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-text-sub">
+            Loading dividend rounds...
+          </div>
+        ) : null}
+
+        {summary?.warnings?.map((warning) => (
+          <div
+            key={warning}
+            className="rounded-2xl border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-sm text-amber-100"
+          >
+            {warning}
+          </div>
+        ))}
 
         {surfaceError ? (
           <div className="rounded-2xl border border-rose-400/20 bg-rose-400/10 px-4 py-3 text-sm text-rose-100">

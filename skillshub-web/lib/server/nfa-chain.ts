@@ -1,5 +1,5 @@
 import { bsc } from 'viem/chains';
-import { createPublicClient, http, isAddress, parseAbi, recoverMessageAddress } from 'viem';
+import { createPublicClient, http, isAddress, recoverMessageAddress } from 'viem';
 import { skillGenesisNfaAbi } from '@/lib/nfa-contract';
 import { getNfaPublicConfig } from '@/lib/server/nfa';
 
@@ -16,10 +16,6 @@ type AgentState = {
 };
 
 let publicClient: ReturnType<typeof createPublicClient> | null = null;
-const dividendAbi = parseAbi([
-  'function pendingDividend(address account) view returns (uint256)',
-  'function claimDividend() returns (uint256)'
-]);
 
 function getClient() {
   if (publicClient) {
@@ -108,20 +104,6 @@ export async function getNfaBalance(walletAddress: `0x${string}`) {
     address: getContractAddress(),
     abi: skillGenesisNfaAbi,
     functionName: 'balanceOf',
-    args: [walletAddress]
-  });
-}
-
-export async function getPendingDividend(walletAddress: `0x${string}`) {
-  const config = getNfaPublicConfig();
-  if (!config.dividendContractAddress || !isAddress(config.dividendContractAddress)) {
-    throw new Error('NFA dividend contract address is not configured');
-  }
-
-  return await getClient().readContract({
-    address: config.dividendContractAddress as `0x${string}`,
-    abi: dividendAbi,
-    functionName: 'pendingDividend',
     args: [walletAddress]
   });
 }

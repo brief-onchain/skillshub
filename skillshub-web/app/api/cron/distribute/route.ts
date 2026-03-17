@@ -4,6 +4,29 @@ import { distributeDividend, verifyCronRequest } from '@/lib/server/nfa-admin';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
+async function parsePayload(request: Request) {
+  if (request.method === 'GET') {
+    const url = new URL(request.url);
+    return {
+      amountWei: url.searchParams.get('amountWei') || '',
+      amount: url.searchParams.get('amount') || ''
+    };
+  }
+
+  try {
+    const body = await request.json();
+    return {
+      amountWei: String(body?.amountWei || ''),
+      amount: String(body?.amount || '')
+    };
+  } catch {
+    return {
+      amountWei: '',
+      amount: ''
+    };
+  }
+}
+
 async function handle(request: Request) {
   const auth = verifyCronRequest(request);
   if (!auth.ok) {
@@ -11,7 +34,8 @@ async function handle(request: Request) {
   }
 
   try {
-    const result = await distributeDividend();
+    const payload = await parsePayload(request);
+    const result = await distributeDividend(payload);
     return NextResponse.json({
       success: true,
       action: 'distribute',
