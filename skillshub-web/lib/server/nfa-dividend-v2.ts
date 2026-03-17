@@ -170,16 +170,10 @@ function getOperatorPrivateKey() {
 
 function getRefillPrivateKey() {
   ensureFlapEnvLoaded();
-  const privateKey = pickFirst(
-    process.env.NFA_DIVIDEND_REFILL_PRIVATE_KEY,
-    process.env.NFA_DIVIDEND_OPERATOR_PRIVATE_KEY,
-    process.env.REWARD_WALLET_PRIVATE_KEY
-  );
+  const privateKey = pickFirst(process.env.NFA_DIVIDEND_REFILL_PRIVATE_KEY);
 
   if (!/^0x[a-fA-F0-9]{64}$/.test(privateKey)) {
-    throw new Error(
-      'Missing refill private key. Set NFA_DIVIDEND_REFILL_PRIVATE_KEY or fall back to NFA_DIVIDEND_OPERATOR_PRIVATE_KEY.'
-    );
+    throw new Error('Missing refill private key. Set NFA_DIVIDEND_REFILL_PRIVATE_KEY.');
   }
 
   return privateKey as `0x${string}`;
