@@ -24,6 +24,7 @@ import { getNfaPublicConfig } from '@/lib/server/nfa';
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000' as const;
 const DEFAULT_SKILL_PER_SHARE = '100000';
 const DEFAULT_GAS_RESERVE = parseEther('0.01');
+const CREATE_ROUND_GAS_LIMIT = BigInt(800000);
 
 type HolderSnapshot = {
   account: `0x${string}`;
@@ -611,7 +612,8 @@ export async function createDividendDistributionRound(input: {
     address: dividendContract,
     abi: skillNfaDividendV2Abi,
     functionName: 'createRound',
-    args: [tree.root, allocatedAmountWei, totalEligibleShares, snapshotURI]
+    args: [tree.root, allocatedAmountWei, totalEligibleShares, snapshotURI],
+    gas: CREATE_ROUND_GAS_LIMIT
   });
   const receipt = await publicClient.waitForTransactionReceipt({ hash });
 
